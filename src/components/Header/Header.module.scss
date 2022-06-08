@@ -1,0 +1,20 @@
+.Header {
+}
+.Header__container {
+  padding: 20px 80px;
+  border-bottom: 1px solid var(--main-color);
+}
+
+@media screen and (max-width: 767.99px) {
+}
+@media screen and (min-width: 768px) {
+  .Header__logo {
+    width: 200px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+}
+
+@media screen and (min-width: 1280px) {
+}

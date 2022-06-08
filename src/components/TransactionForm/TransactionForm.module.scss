@@ -1,0 +1,48 @@
+.TransactionForm__container {
+  padding: 20px 0;
+  width: 100%;
+}
+.TransactionForm__entry {
+  all: unset;
+  border-radius: 10px;
+  font-size: 18px;
+  padding: 15px;
+  max-width: 100%;
+}
+.TransactionForm__payment_info {
+  margin-bottom: 30px;
+  & > * > * {
+    border: 1px solid var(--main-color);
+    &::placeholder {
+      color: var(--main-color);
+    }
+  }
+}
+.TransactionForm__card_info {
+  background-image: url(../../img/creditcard_mob.png);
+  background-repeat: no-repeat;
+  padding-top: 66px;
+  & > * > * {
+    &::placeholder {
+      color: var(--text-color);
+    }
+
+    background-color: white;
+  }
+}
+.TransactionForm__card_data {
+  display: flex;
+
+  margin-bottom: 70px;
+  &:not(:last-child) {
+    margin-right: 15px;
+  }
+}
+.TransactionForm__name,
+.TransactionForm__expiration {
+  &::placeholder {
+    color: var(--text-color);
+  }
+}
+.TransactionForm__number {
+}
