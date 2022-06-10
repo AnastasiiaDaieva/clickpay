@@ -41,8 +41,24 @@ function TransactionForm({ setIsInProgress }) {
     reset();
   };
   return (
-    <div className={s.TransactionForm__container}>
-      <form onSubmit={handleSubmit(onSubmit)} className={s.TransactionForm}>
+    <form onSubmit={handleSubmit(onSubmit)} className={s.TransactionForm}>
+      <div className={s.TransactionForm__wrapper_two}>
+        {" "}
+        <div>
+          {" "}
+          <h1 className={s.TransactionForm__heading}>
+            Lorem{" "}
+            <span className={s.TransactionForm__colored}>ipsum dolor</span> sit
+            amet consectetur
+          </h1>
+          <p className={s.TransactionForm__text}>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia
+            fuga id libero provident et inventore. Harum voluptatem modi labore
+            at. Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia
+            fuga id libero provident et inventore. Harum voluptatem modi labore
+            at.
+          </p>{" "}
+        </div>
         <div className={s.TransactionForm__payment_info}>
           {" "}
           <div className={s.TransactionForm__account}>
@@ -109,6 +125,8 @@ function TransactionForm({ setIsInProgress }) {
             </div>
           </div>
         </div>
+      </div>
+      <div className={s.TransactionForm__wrapper_two}>
         <div className={s.TransactionForm__card_info}>
           <div
             className={`${s.TransactionForm__group} ${s.TransactionForm__number}`}
@@ -168,13 +186,13 @@ function TransactionForm({ setIsInProgress }) {
               })}
             />
             {errors.cvv && <span>Fill the entry</span>}
-          </div>
-        </div>
+          </div>{" "}
+        </div>{" "}
         <button type="submit" className={s.TransactionForm__submit}>
           Pay
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }
 

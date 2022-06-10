@@ -8,26 +8,32 @@
   // outline: 1px solid tomato;
 }
 
-body {
-  margin: 0;
-  font-family: "Nunito", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: normal;
-}
-
 :root {
   --main-color: #ed3f23;
   --text-color: #0f1539;
   --success-color: #23c84d;
   --failure-color: #ee3f23;
   --inactive-color: #bfbfbf;
+  --main-font: "Nunito", sans-serif;
 }
 
+body {
+  margin: 0;
+  font-family: var(--main-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: normal;
+}
 button {
   all: unset;
 }
-
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: var(--main-font);
+}
 p,
 span {
   margin: 0;
