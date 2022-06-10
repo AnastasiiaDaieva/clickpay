@@ -1,48 +1,199 @@
+// GENERAL
+.TransactionForm {
+}
+
 .TransactionForm__container {
   padding: 20px 0;
   width: 100%;
 }
 .TransactionForm__entry {
-  all: unset;
-  border-radius: 10px;
+  border-radius: 15px;
   font-size: 18px;
   padding: 15px;
-  max-width: 100%;
 }
-.TransactionForm__payment_info {
-  margin-bottom: 30px;
-  & > * > * {
-    border: 1px solid var(--main-color);
-    &::placeholder {
-      color: var(--main-color);
-    }
-  }
-}
-.TransactionForm__card_info {
-  background-image: url(../../img/creditcard_mob.png);
-  background-repeat: no-repeat;
-  padding-top: 66px;
-  & > * > * {
-    &::placeholder {
-      color: var(--text-color);
-    }
 
-    background-color: white;
-  }
+.TransactionForm__submit {
+  background-color: var(--main-color);
+  color: white;
+  text-align: center;
+  border-radius: 15px;
+  padding: 15px 0;
+  font-size: 21px;
+  text-transform: uppercase;
+}
+
+//
+.TransactionForm__name {
+  margin-right: 15px;
 }
 .TransactionForm__card_data {
   display: flex;
 
   margin-bottom: 70px;
+}
+.TransactionForm__payment_info {
+  margin-bottom: 30px;
+}
+.TransactionForm__account {
+  margin-bottom: 15px;
+}
+.TransactionForm__sum {
+  margin-right: 15px;
+}
+.TransactionForm__radios {
+  all: unset;
+  display: flex;
+}
+
+.TransactionForm__radios_wrapper {
   &:not(:last-child) {
     margin-right: 15px;
   }
 }
+
+.TransactionForm__card_info {
+  background-repeat: no-repeat;
+  padding-top: 72px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 100px;
+
+  & .TransactionForm__entry {
+    background-color: white;
+    border: none;
+    &::placeholder {
+      color: var(--text-color);
+      text-align: left;
+    }
+  }
+}
+
+.TransactionForm__account,
+.TransactionForm__sum {
+  & > * {
+    border: 1px solid var(--main-color);
+    width: 100%;
+    border-radius: 15px;
+
+    &::placeholder {
+      color: var(--main-color);
+    }
+  }
+}
+
 .TransactionForm__name,
 .TransactionForm__expiration {
+  text-align: left;
+
   &::placeholder {
     color: var(--text-color);
   }
 }
-.TransactionForm__number {
+
+// CURRENCY
+.TransactionForm__currency {
+  position: relative;
+  top: 15px;
+  left: 0;
+}
+.TransactionForm__currency_label {
+  position: relative;
+  background-color: var(--inactive-color);
+  color: white;
+  padding: 15px 20px;
+
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--inactive-color);
+  border-radius: 15px;
+  background-origin: border-box;
+}
+
+//MEDIA RULES
+//MOBILE
+@media screen and (max-width: 767px) {
+  .TransactionForm {
+    width: 100%;
+  }
+
+  .TransactionForm__entry {
+    width: 100%;
+  }
+
+  .TransactionForm__card_info {
+    background-image: url(../../img/creditcard_mob.png);
+  }
+
+  .TransactionForm__number {
+    margin-bottom: 15px;
+  }
+  .TransactionForm__group {
+    width: 100%;
+  }
+
+  .TransactionForm__name .TransactionForm__entry {
+    width: 160px;
+  }
+
+  .TransactionForm__cvv {
+    width: 90px;
+    margin-left: auto;
+  }
+  .TransactionForm__cvv .TransactionForm__entry {
+    width: 100%;
+    padding: 15px 25px;
+  }
+  .TransactionForm__submit {
+    width: 100%;
+  }
+  .TransactionForm__payment_data {
+    display: flex;
+    position: relative;
+  }
+}
+
+// TAB-DT
+@media screen and (min-width: 768px) {
+  .TransactionForm {
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & > * {
+      width: 100%;
+    }
+  }
+
+  .TransactionForm__card_info {
+    background-image: url(../../img/creditcard_full.png);
+    background-size: cover;
+    padding-bottom: 150px;
+  }
+
+  .TransactionForm__number {
+    margin-bottom: 15px;
+  }
+  .TransactionForm__group {
+    // width: 100%;
+  }
+
+  .TransactionForm__name .TransactionForm__entry {
+    width: 160px;
+  }
+
+  .TransactionForm__cvv {
+    width: 90px;
+    margin-left: auto;
+  }
+  .TransactionForm__cvv .TransactionForm__entry {
+    width: 100%;
+    padding: 15px 25px;
+  }
+  .TransactionForm__submit {
+    width: 50%;
+  }
+  .TransactionForm__payment_data {
+    display: flex;
+    position: relative;
+  }
 }

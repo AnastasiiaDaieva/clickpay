@@ -1,3 +1,13 @@
+// @import-normalize;
+*,
+::after,
+::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  // outline: 1px solid tomato;
+}
+
 body {
   margin: 0;
   font-family: "Nunito", sans-serif;
@@ -8,11 +18,48 @@ body {
 :root {
   --main-color: #ed3f23;
   --text-color: #0f1539;
+  --success-color: #23c84d;
+  --failure-color: #ee3f23;
   --inactive-color: #bfbfbf;
 }
 
 button {
   all: unset;
+}
+
+p,
+span {
+  margin: 0;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+img {
+  display: block;
+  margin: 0;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: var(--main-color);
+}
+
+article {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }
 
 @media screen and (max-width: 767.99px) {

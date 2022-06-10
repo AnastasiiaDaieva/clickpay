@@ -1,0 +1,68 @@
+.Notification {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+.Notification__success,
+.Notification__failure {
+  position: relative;
+  border-radius: 15px;
+  color: white;
+}
+
+.Notification__success {
+  background-color: var(--success-color);
+}
+
+.Notification__failure {
+  background-color: var(--failure-color);
+}
+
+.Notification__text {
+  width: 100%;
+}
+
+.Notification__icon {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+}
+
+.Notification__submit {
+  margin-top: auto;
+}
+
+@media screen and (max-width: 767.99px) {
+  .Notification {
+    padding: 60px 30px;
+  }
+  .Notification__success,
+  .Notification__failure {
+    width: 100%;
+    padding: 60px 40px 35px 30px;
+
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .Notification__icon {
+    width: 75px;
+    height: 60px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .Notification {
+    padding-top: 20%;
+  }
+  .Notification__success,
+  .Notification__failure {
+    padding: 60px 30px 20px 25px;
+    width: 415px;
+  }
+  .Notification__icon {
+    width: 100px;
+    height: 80px;
+  }
+}
