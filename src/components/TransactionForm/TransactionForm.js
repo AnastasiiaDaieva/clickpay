@@ -65,7 +65,7 @@ function TransactionForm({ setIsInProgress }) {
             <input
               type="text"
               name="tradeaccount"
-              placeholder="your trade account"
+              placeholder="trading account"
               className={s.TransactionForm__entry}
               {...register("tradeaccount", {
                 required: true,
