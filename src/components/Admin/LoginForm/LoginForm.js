@@ -1,6 +1,6 @@
 import { Form, Button } from "react-bootstrap";
 import { Container } from "react-bootstrap";
-import s from "./LoginForm.module.css";
+import s from "./LoginForm.module.scss";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -14,8 +14,11 @@ function LoginForm({}) {
   const onSubmit = (data) => {
     const { email, password } = data;
     axios
-      .post("http://localhost:4000/api/users/login", { email, password })
-      // .post("/users/signin", { email, password })
+      // .post("http://localhost:4000/api/users/login", { email, password })
+      .post("https://clickpay-backend.herokuapp.com/api/users/login", {
+        email,
+        password,
+      })
       .then((res) => {
         console.log(res.data);
 

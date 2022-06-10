@@ -1,6 +1,11 @@
 .App {
 }
 
+.App__spinner {
+  width: 400px;
+  height: 400px;
+}
+
 .App {
   @media screen and (max-width: 767px) {
     width: 100%;

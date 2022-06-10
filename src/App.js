@@ -1,24 +1,42 @@
 import Header from "components/Header/Header";
 import s from "./App.module.scss";
-import TransactionForm from "components/TransactionForm/TransactionForm";
-import { useState } from "react";
-import Notification from "components/Notification/Notification";
-function App() {
-  const [isInProgress, setIsInProgress] = useState(true);
-  const [isSuccessful, setIsSuccessful] = useState(true);
+import { Suspense, lazy } from "react";
+import { Route, Routes } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 
+const HomepageView = lazy(() =>
+  import("views/HomepageView" /*webpackChunkName: "home-view" */)
+);
+const AdminView = lazy(() =>
+  import("views/AdminView" /*webpackChunkName: "admin-view" */)
+);
+
+function App() {
   return (
     <div className={s.App}>
       <Header />
+
       <main>
-        {isInProgress ? (
-          <TransactionForm setIsInProgress={setIsInProgress} />
-        ) : (
-          <Notification
-            isSuccessful={isSuccessful}
-            setIsInProgress={setIsInProgress}
-          />
-        )}
+        {" "}
+        <Suspense
+          fallback={
+            <Spinner
+              animation="grow"
+              variant="dark"
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          }
+        >
+          <Routes>
+            <Route path="/" element={<HomepageView />} />
+            <Route path="/admin" element={<AdminView />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );

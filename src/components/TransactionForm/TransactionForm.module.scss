@@ -1,5 +1,6 @@
 // GENERAL
 .TransactionForm {
+  line-height: normal;
 }
 
 .TransactionForm__container {
@@ -10,6 +11,7 @@
   border-radius: 15px;
   font-size: 18px;
   padding: 15px;
+  min-height: 50px;
 }
 
 .TransactionForm__submit {
@@ -25,6 +27,10 @@
 //
 .TransactionForm__name {
   margin-right: 15px;
+}
+.TransactionForm__payment_data {
+  display: flex;
+  position: relative;
 }
 .TransactionForm__card_data {
   display: flex;
@@ -53,10 +59,6 @@
 
 .TransactionForm__card_info {
   background-repeat: no-repeat;
-  padding-top: 72px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 100px;
 
   & .TransactionForm__entry {
     background-color: white;
@@ -88,6 +90,10 @@
   &::placeholder {
     color: var(--text-color);
   }
+}
+
+.TransactionForm__number {
+  margin-bottom: 15px;
 }
 
 // CURRENCY
@@ -122,11 +128,10 @@
 
   .TransactionForm__card_info {
     background-image: url(../../img/creditcard_mob.png);
+
+    padding: 72px 20px 100px 20px;
   }
 
-  .TransactionForm__number {
-    margin-bottom: 15px;
-  }
   .TransactionForm__group {
     width: 100%;
   }
@@ -139,26 +144,19 @@
     width: 90px;
     margin-left: auto;
   }
-  .TransactionForm__cvv .TransactionForm__entry {
-    width: 100%;
-    padding: 15px 25px;
-  }
+
   .TransactionForm__submit {
     width: 100%;
-  }
-  .TransactionForm__payment_data {
-    display: flex;
-    position: relative;
   }
 }
 
 // TAB-DT
 @media screen and (min-width: 768px) {
   .TransactionForm {
-    max-width: 700px;
+    width: 700px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+
     & > * {
       width: 100%;
     }
@@ -166,34 +164,60 @@
 
   .TransactionForm__card_info {
     background-image: url(../../img/creditcard_full.png);
-    background-size: cover;
-    padding-bottom: 150px;
+    background-size: contain;
+    background-position: center;
+    padding: 240px 50px 180px 35px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .TransactionForm__card_data {
+    max-width: 500px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-around;
   }
 
   .TransactionForm__number {
-    margin-bottom: 15px;
-  }
-  .TransactionForm__group {
-    // width: 100%;
+    & .TransactionForm__entry {
+      min-width: 500px;
+    }
   }
 
-  .TransactionForm__name .TransactionForm__entry {
-    width: 160px;
+  .TransactionForm__entry {
+    max-width: 500px;
+    font-size: 22px;
+    height: 70px;
   }
 
   .TransactionForm__cvv {
-    width: 90px;
-    margin-left: auto;
+    position: absolute;
+    width: 40px;
+    top: 300px;
+    right: 90px;
+    & .TransactionForm__entry {
+      width: 90px;
+      text-align: center;
+      padding-left: 25px;
+    }
   }
-  .TransactionForm__cvv .TransactionForm__entry {
-    width: 100%;
-    padding: 15px 25px;
-  }
+
   .TransactionForm__submit {
     width: 50%;
+    align-self: center;
   }
   .TransactionForm__payment_data {
     display: flex;
-    position: relative;
+    justify-content: center;
+  }
+
+  .TransactionForm__payment_info {
+    text-align: center;
+  }
+
+  .TransactionForm__name,
+  .TransactionForm__expiration {
+    & .TransactionForm__entry {
+      max-width: 200px;
+    }
   }
 }
