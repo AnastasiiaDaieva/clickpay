@@ -4,6 +4,8 @@ import axios from "axios";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
+import Currency from "./Elements/Currency";
+import FormText from "./Elements/FormText";
 
 function TransactionForm({ setIsInProgress }) {
   const [currentValue, setCurrentValue] = useState("dollar");
@@ -42,26 +44,19 @@ function TransactionForm({ setIsInProgress }) {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={s.TransactionForm}>
-      <div className={s.TransactionForm__wrapper_two}>
+      <div className={s.TransactionForm__wrapper}>
         {" "}
-        <div>
-          {" "}
-          <h1 className={s.TransactionForm__heading}>
-            Lorem{" "}
-            <span className={s.TransactionForm__colored}>ipsum dolor</span> sit
-            amet consectetur
-          </h1>
-          <p className={s.TransactionForm__text}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia
-            fuga id libero provident et inventore. Harum voluptatem modi labore
-            at. Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia
-            fuga id libero provident et inventore. Harum voluptatem modi labore
-            at.
-          </p>{" "}
-        </div>
+        <FormText
+          headingFirstPart="Lorem "
+          headingSecondPart="sit amet consectetur"
+          coloredHeading="ipsum dolor"
+          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia fuga id
+        libero provident et inventore. Harum voluptatem modi labore at. Lorem
+        ipsum dolor sit amet consectetur adipisicing elit. Officia fuga id
+        libero provident et inventore. Harum voluptatem modi labore at."
+        />
         <div className={s.TransactionForm__payment_info}>
-          {" "}
-          <div className={s.TransactionForm__account}>
+          <div className={s.TransactionForm__payment_account}>
             <input
               type="text"
               name="tradeaccount"
@@ -89,60 +84,33 @@ function TransactionForm({ setIsInProgress }) {
               />
               {errors.sum && <span>Fill the entry</span>}
             </div>
-            <div className={s.TransactionForm__currency}>
-              {" "}
-              <fieldset className={s.TransactionForm__radios}>
-                <div className={s.TransactionForm__radios_wrapper}>
-                  <span
-                    className={s.TransactionForm__currency_label}
-                    style={{
-                      backgroundColor:
-                        currentValue === "dollar"
-                          ? "var(--main-color)"
-                          : "var(--inactive-color)",
-                    }}
-                    onClick={() => setCurrentValue("dollar")}
-                  >
-                    $
-                  </span>
-                </div>
-
-                <div className={s.TransactionForm__radios_wrapper}>
-                  <span
-                    className={s.TransactionForm__currency_label}
-                    onClick={() => setCurrentValue("euro")}
-                    style={{
-                      backgroundColor:
-                        currentValue === "euro"
-                          ? "var(--main-color)"
-                          : "var(--inactive-color)",
-                    }}
-                  >
-                    €
-                  </span>
-                </div>
-              </fieldset>
-            </div>
+            <Currency
+              currentValue={currentValue}
+              setCurrentValue={setCurrentValue}
+            />
           </div>
         </div>
       </div>
-      <div className={s.TransactionForm__wrapper_two}>
-        <div className={s.TransactionForm__card_info}>
-          <div
-            className={`${s.TransactionForm__group} ${s.TransactionForm__number}`}
-          >
-            <input
-              type="number"
-              name="cardnumber"
-              placeholder="0000 0000 0000 0000"
-              className={`${s.TransactionForm__entry} `}
-              {...register("cardnumber", {
-                required: true,
-              })}
-            />
-            {errors.cardnumber && <span>Fill the entry</span>}
-          </div>{" "}
-          <div className={s.TransactionForm__card_data}>
+      <div className={s.TransactionForm__wrapper}>
+        <div className={s.TransactionForm__card}>
+          <div className={s.TransactionForm__cardnumber_wrapper}>
+            {" "}
+            <div
+              className={`${s.TransactionForm__group} ${s.TransactionForm__cardnumber}`}
+            >
+              <input
+                type="number"
+                name="cardnumber"
+                placeholder="0000 0000 0000 0000"
+                className={`${s.TransactionForm__entry} `}
+                {...register("cardnumber", {
+                  required: true,
+                })}
+              />
+              {errors.cardnumber && <span>Fill the entry</span>}
+            </div>{" "}
+          </div>
+          <div className={s.TransactionForm__card_data_wrapper}>
             {" "}
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__name}`}
@@ -173,24 +141,30 @@ function TransactionForm({ setIsInProgress }) {
               {errors.expiration && <span>Fill the entry</span>}
             </div>
           </div>
-          <div
-            className={`${s.TransactionForm__group} ${s.TransactionForm__cvv}`}
-          >
-            <input
-              type="number"
-              name="cvv"
-              placeholder="CVV"
-              className={`${s.TransactionForm__entry} `}
-              {...register("cvv", {
-                required: true,
-              })}
-            />
-            {errors.cvv && <span>Fill the entry</span>}
-          </div>{" "}
-        </div>{" "}
-        <button type="submit" className={s.TransactionForm__submit}>
-          Pay
-        </button>
+          <div className={s.TransactionForm__cvv_wrapper}>
+            {" "}
+            <div
+              className={`${s.TransactionForm__group} ${s.TransactionForm__cvv}`}
+            >
+              <input
+                type="number"
+                name="cvv"
+                placeholder="CVV"
+                className={`${s.TransactionForm__entry} `}
+                {...register("cvv", {
+                  required: true,
+                })}
+              />
+              {errors.cvv && <span>Fill the entry</span>}
+            </div>
+          </div>
+        </div>
+        <div className={s.TransactionForm__button}>
+          {" "}
+          <button type="submit" className={s.TransactionForm__submit}>
+            Pay
+          </button>
+        </div>
       </div>
     </form>
   );

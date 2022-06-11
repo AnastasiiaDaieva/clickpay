@@ -1,0 +1,39 @@
+.Currency {
+  position: relative;
+  top: 15px;
+  left: 0;
+}
+.Currency__label {
+  position: relative;
+  color: white;
+
+  border-radius: 15px;
+  background-origin: border-box;
+}
+
+.Currency__radios {
+  all: unset;
+  display: flex;
+}
+
+.Currency__radios_wrapper {
+  &:not(:last-child) {
+    margin-right: 15px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .Currency__label {
+    width: 50px;
+    height: 50px;
+    padding: 15px 20px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .Currency__label {
+    padding: 10px 15px;
+
+    width: 45px;
+    height: 45px;
+  }
+}
