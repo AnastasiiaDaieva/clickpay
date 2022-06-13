@@ -18,18 +18,23 @@ function TransactionForm({ setIsInProgress }) {
   } = useForm();
 
   console.log(currentValue);
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     // console.log(data);
     const { tradeaccount, sum, cardnumber, name: holderName } = data;
 
     const operation = {
-      tradeaccount: tradeaccount,
-      sum: sum,
+      account: tradeaccount,
+      amount: sum,
       currency: currentValue,
-      cardnumber: cardnumber.slice(0, 6),
+      cardNumber: cardnumber.slice(0, 6),
       holderName: holderName,
     };
     console.log(operation);
+    const response = await axios.post(
+      "https://clickpay-backend.herokuapp.com/api/transactions",
+      operation
+    );
+    console.log(response);
     setIsInProgress(false);
     reset();
   };

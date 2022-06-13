@@ -24,7 +24,9 @@ function LoginForm({ setCurrentUser }) {
 
       setCurrentUser(response.data.user);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
 
     // .then((res) => {
     //   console.log(res.data);
