@@ -1,7 +1,19 @@
 import LoginForm from "components/Admin/LoginForm/LoginForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 function AdminView() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [currentUser, setCurrentUser] = useState();
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      setCurrentUser(foundUser);
+    }
+  }, []);
+
+  console.log(currentUser);
   return (
     <>
       {currentUser ? (

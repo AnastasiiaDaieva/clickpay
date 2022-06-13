@@ -4,28 +4,35 @@ import s from "./LoginForm.module.scss";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-function LoginForm({}) {
+function LoginForm({ setCurrentUser }) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {
-    const { email, password } = data;
-    axios
-      // .post("http://localhost:4000/api/users/login", { email, password })
-      .post("https://clickpay-backend.herokuapp.com/api/users/login", {
-        email,
-        password,
-      })
-      .then((res) => {
-        console.log(res.data);
 
-        window.localStorage.setItem("token", JSON.stringify(res.data.token));
-      })
-      .catch((error) => console.log(error));
-    reset();
+  const onSubmit = async (data) => {
+    try {
+      const { email, password } = data;
+      const response = await axios
+        // .post("http://localhost:4000/api/users/login", { email, password })
+        .post("https://clickpay-backend.herokuapp.com/api/users/login", {
+          email,
+          password,
+        });
+
+      setCurrentUser(response.data.user);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+    } catch (error) {}
+
+    // .then((res) => {
+    //   console.log(res.data);
+
+    //   window.localStorage.setItem("token", JSON.stringify(res.data.token));
+    // })
+    // .catch((error) => console.log(error));
+    // reset();
   };
   return (
     <div className={s.LoginForm__container}>

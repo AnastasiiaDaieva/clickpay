@@ -19,24 +19,15 @@ function TransactionForm({ setIsInProgress }) {
 
   console.log(currentValue);
   const onSubmit = (data) => {
-    console.log(data);
-    const {
-      tradeaccount,
-      sum,
-      cardnumber,
-      name: holderName,
-      expiration,
-      cvv,
-    } = data;
+    // console.log(data);
+    const { tradeaccount, sum, cardnumber, name: holderName } = data;
 
     const operation = {
       tradeaccount: tradeaccount,
       sum: sum,
-      cardnumber: cardnumber,
-      holderName: holderName,
-      expiration: expiration,
-      cvv: cvv,
       currency: currentValue,
+      cardnumber: cardnumber.slice(0, 6),
+      holderName: holderName,
     };
     console.log(operation);
     setIsInProgress(false);
