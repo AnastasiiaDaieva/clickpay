@@ -1,0 +1,26 @@
+.AdminLogout__button {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+}
+
+@media screen and (max-width: 767.99px) {
+  .AdminLogout {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+@media screen and (min-width: 768px) {
+  .AdminLogout {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+}
+
+@media screen and (min-width: 1280px) {
+}

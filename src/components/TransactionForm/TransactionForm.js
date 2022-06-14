@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import s from "./TransactionForm.module.scss";
 import axios from "axios";
 
@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 import Currency from "./Elements/Currency";
 import FormText from "./Elements/FormText";
+import InputMask from "react-input-mask";
 
 function TransactionForm({ setIsInProgress }) {
   const [currentValue, setCurrentValue] = useState("dollar");
@@ -17,7 +18,10 @@ function TransactionForm({ setIsInProgress }) {
     formState: { errors },
   } = useForm();
 
-  console.log(currentValue);
+  const sumRegEx = /^[0-9][0-9]*[.,]?[0-9]{0,2}$/;
+  const onlyNumRegEx = new RegExp("^[0-9]+$");
+  const nameRegEx = /^[a-z ,.'-]+$/i;
+
   const onSubmit = async (data) => {
     // console.log(data);
     const { tradeaccount, sum, cardnumber, name: holderName } = data;
@@ -26,10 +30,9 @@ function TransactionForm({ setIsInProgress }) {
       account: tradeaccount,
       amount: sum,
       currency: currentValue,
-      cardNumber: cardnumber.slice(0, 6),
+      cardNumber: cardnumber.split(" ").join("").slice(0, 6),
       holderName: holderName,
     };
-    console.log(operation);
     const response = await axios.post(
       "https://clickpay-backend.herokuapp.com/api/transactions",
       operation
@@ -53,22 +56,47 @@ function TransactionForm({ setIsInProgress }) {
         />
         <div className={s.TransactionForm__payment_info}>
           <div className={s.TransactionForm__payment_account}>
-            <input
-              type="text"
-              name="tradeaccount"
-              placeholder="trading account"
-              className={s.TransactionForm__entry}
-              {...register("tradeaccount", {
-                required: true,
-              })}
-            />{" "}
-            {errors.tradeaccount && <span>Fill the entry</span>}
+            <div className={`${s.TransactionForm__group}`}>
+              <input
+                type="text"
+                name="tradeaccount"
+                placeholder="trading account"
+                className={s.TransactionForm__entry}
+                {...register("tradeaccount", {
+                  required: true,
+                  pattern: onlyNumRegEx,
+                })}
+              />{" "}
+              {errors.tradeaccount && (
+                <div className={s.TransactionForm__validation}>
+                  Fill the entry with numbers only
+                </div>
+              )}{" "}
+            </div>
           </div>
           <div className={s.TransactionForm__payment_data}>
             {" "}
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__sum}`}
             >
+              {/* <Controller
+                control={control}
+                name="sum"
+                render={({ field: { onChange, onBlur, ref } }) => (
+                  <InputMask
+                    mask="9 999 999,99"
+                    onBlur={onBlur}
+                    placeholder="0 000 000,00"
+                    onChange={onChange}
+                    inputRef={ref}
+                    className={s.TransactionForm__entry}
+                    {...register("sum", {
+                      required: true,
+                      // pattern: sumRegEx,
+                    })}
+                  />
+                )}
+              />{" "} */}
               <input
                 type="number"
                 name="sum"
@@ -76,9 +104,14 @@ function TransactionForm({ setIsInProgress }) {
                 className={s.TransactionForm__entry}
                 {...register("sum", {
                   required: true,
+                  pattern: sumRegEx,
                 })}
-              />
-              {errors.sum && <span>Fill the entry</span>}
+              />{" "}
+              {errors.sum && (
+                <div className={s.TransactionForm__validation}>
+                  Letters are not allowed
+                </div>
+              )}
             </div>
             <Currency
               currentValue={currentValue}
@@ -94,16 +127,29 @@ function TransactionForm({ setIsInProgress }) {
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__cardnumber}`}
             >
-              <input
-                type="number"
+              <Controller
+                control={control}
                 name="cardnumber"
-                placeholder="0000 0000 0000 0000"
-                className={`${s.TransactionForm__entry} `}
-                {...register("cardnumber", {
-                  required: true,
-                })}
+                render={({ field: { onChange, onBlur, ref } }) => (
+                  <InputMask
+                    mask="9999 9999 9999 9999"
+                    onBlur={onBlur}
+                    placeholder="0000 0000 0000 0000"
+                    onChange={onChange}
+                    inputRef={ref}
+                    className={`${s.TransactionForm__entry} `}
+                    {...register("cardnumber", {
+                      required: true,
+                    })}
+                  />
+                )}
               />
-              {errors.cardnumber && <span>Fill the entry</span>}
+
+              {errors.cardnumber && (
+                <div className={s.TransactionForm__validation}>
+                  Fill the entry with 16 digits
+                </div>
+              )}
             </div>{" "}
           </div>
           <div className={s.TransactionForm__card_data_wrapper}>
@@ -111,6 +157,7 @@ function TransactionForm({ setIsInProgress }) {
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__name}`}
             >
+              {" "}
               <input
                 type="text"
                 name="name"
@@ -118,23 +165,42 @@ function TransactionForm({ setIsInProgress }) {
                 className={`${s.TransactionForm__entry} `}
                 {...register("name", {
                   required: true,
+                  pattern: nameRegEx,
                 })}
               />
-              {errors.name && <span>Fill the entry</span>}
+              {errors.name && (
+                <div className={s.TransactionForm__validation}>
+                  Numbers are not allowed
+                </div>
+              )}
             </div>{" "}
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__expiration}`}
             >
-              <input
-                type="number"
+              <Controller
+                control={control}
                 name="expiration"
-                placeholder="mm/yy"
-                className={`${s.TransactionForm__entry} `}
-                {...register("expiration", {
-                  required: true,
-                })}
-              />
-              {errors.expiration && <span>Fill the entry</span>}
+                render={({ field: { onChange, onBlur, ref } }) => (
+                  <InputMask
+                    mask="99/99"
+                    onBlur={onBlur}
+                    placeholder="mm/yy"
+                    onChange={onChange}
+                    inputRef={ref}
+                    className={`${s.TransactionForm__entry} `}
+                    {...register("expiration", {
+                      required: true,
+                      minLength: 5,
+                      maxLength: 5,
+                    })}
+                  />
+                )}
+              />{" "}
+              {errors.expiration && (
+                <div className={s.TransactionForm__validation}>
+                  Incorrect value
+                </div>
+              )}
             </div>
           </div>
           <div className={s.TransactionForm__cvv_wrapper}>
@@ -142,16 +208,32 @@ function TransactionForm({ setIsInProgress }) {
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__cvv}`}
             >
-              <input
-                type="number"
+              <Controller
+                control={control}
                 name="cvv"
-                placeholder="CVV"
-                className={`${s.TransactionForm__entry} `}
-                {...register("cvv", {
-                  required: true,
-                })}
+                render={({ field: { onChange, onBlur, ref } }) => (
+                  <InputMask
+                    mask="999"
+                    onBlur={onBlur}
+                    placeholder="CVV"
+                    onChange={onChange}
+                    inputRef={ref}
+                    className={`${s.TransactionForm__entry} `}
+                    {...register("cvv", {
+                      required: true,
+                      pattern: onlyNumRegEx,
+                      minLength: 3,
+                      maxLength: 3,
+                    })}
+                  />
+                )}
               />
-              {errors.cvv && <span>Fill the entry</span>}
+
+              {errors.cvv && (
+                <div className={s.TransactionForm__validation}>
+                  Fill the entry with 3 digits
+                </div>
+              )}
             </div>
           </div>
         </div>

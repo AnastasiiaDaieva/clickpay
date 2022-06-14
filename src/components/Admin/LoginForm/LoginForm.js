@@ -15,12 +15,14 @@ function LoginForm({ setCurrentUser }) {
   const onSubmit = async (data) => {
     try {
       const { email, password } = data;
-      const response = await axios
-        // .post("http://localhost:4000/api/users/login", { email, password })
-        .post("https://clickpay-backend.herokuapp.com/api/users/login", {
-          email,
-          password,
-        });
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        { email, password }
+      );
+      // .post("https://clickpay-backend.herokuapp.com/api/users/login", {
+      //   email,
+      //   password,
+      // });
 
       setCurrentUser(response.data.user);
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -28,13 +30,7 @@ function LoginForm({ setCurrentUser }) {
       console.log(error);
     }
 
-    // .then((res) => {
-    //   console.log(res.data);
-
-    //   window.localStorage.setItem("token", JSON.stringify(res.data.token));
-    // })
-    // .catch((error) => console.log(error));
-    // reset();
+    reset();
   };
   return (
     <div className={s.LoginForm__container}>
@@ -68,7 +64,11 @@ function LoginForm({ setCurrentUser }) {
             {errors.password && <span>Fill the entry</span>}
           </Form.Group>
 
-          <Button variant="primary" type="submit">
+          <Button
+            variant="primary"
+            type="submit"
+            className={s.LoginForm__button}
+          >
             Submit
           </Button>
         </Form>

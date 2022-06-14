@@ -4,31 +4,39 @@ import { useState, useEffect } from "react";
 import s from "./AdminView.module.scss";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
+
+const getToken = JSON.parse(localStorage.getItem("user"));
+axios.defaults.headers.common.Authorization = `Bearer ${getToken.token}`;
 
 function AdminView() {
-  const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const [password, setPassword] = useState("");
   const [transactions, setTransactions] = useState([]);
-
   const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
     const getFunc = async () => {
       try {
         setIsLoading(true);
+        // const response = await axios.get(
+        //   "https://clickpay-backend.herokuapp.com/api/transactions"
+        // );
         const response = await axios.get(
-          "https://clickpay-backend.herokuapp.com/api/transactions"
+          "http://localhost:5000/api/transactions"
         );
-        console.log(response.data);
         return response;
       } catch (error) {
         console.log(error);
       }
     };
     getFunc()
-      .then((res) => setTransactions(res.data))
+      .then((res) => {
+        const data = res.data.sort((a, b) =>
+          b.createdAt.localeCompare(a.createdAt)
+        );
+        console.log("SORTED", data);
+        setTransactions(data);
+      })
       .catch((error) => console.log(error))
       .finally(() => setIsLoading(false));
   }, []);
@@ -41,7 +49,11 @@ function AdminView() {
     }
   }, []);
 
-  console.log(currentUser);
+  const updStatus = (status) => {
+    console.log(status);
+  };
+
+  // console.log(currentUser);
 
   return (
     <div className={s.AdminView}>
@@ -59,7 +71,10 @@ function AdminView() {
       ) : (
         <>
           {currentUser ? (
-            <AdminTable transactions={transactions} />
+            <>
+              <AdminLogout setCurrentUser={setCurrentUser} />
+              <AdminTable transactions={transactions} updStatus={updStatus} />
+            </>
           ) : (
             <LoginForm setCurrentUser={setCurrentUser} />
           )}

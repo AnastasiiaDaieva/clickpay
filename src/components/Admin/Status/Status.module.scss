@@ -1,0 +1,12 @@
+.Status {
+  position: relative;
+}
+
+.Status__icons {
+  position: absolute;
+  top: -5px;
+  left: -15px;
+  background-color: var(--inactive-color);
+  padding: 5px;
+  border-radius: 15px;
+}

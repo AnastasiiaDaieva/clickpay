@@ -1,8 +1,16 @@
 import { Table } from "react-bootstrap";
 import Status from "../Status/Status";
 
-function AdminTable({ transactions }) {
-  const headings = ["Time", "Account", "Amount", "Card", "Name", "Status"];
+function AdminTable({ transactions, updStatus }) {
+  const headings = [
+    "Time",
+    "Account",
+    "Amount",
+    "Card",
+    "Name",
+    "Status",
+    "Updated at",
+  ];
   const convertDate = (date) => {
     const newDate = new Date(date)
       .toISOString()
@@ -10,7 +18,11 @@ function AdminTable({ transactions }) {
       .split("-")
       .reverse()
       .join(".");
-    return newDate;
+
+    const newTime = new Date(date).toISOString().substring(11, 19);
+
+    const final = [newTime, newDate].join(", ");
+    return final;
   };
   return (
     <Table responsive>
@@ -28,12 +40,15 @@ function AdminTable({ transactions }) {
             <td>{index + 1}</td>
             <td>{convertDate(item.createdAt)}</td>
             <td>{item.account}</td>
-            <td>{`${item.amount} ${item.currency}`}</td>
+            <td>
+              {`${item.amount}`} {item.currency === "euro" ? "€" : "$"}
+            </td>
             <td>{item.cardNumber}</td>
             <td>{item.holderName}</td>
             <td>
-              <Status status={item.status} />
+              <Status status={item.status} updStatus={updStatus} />
             </td>
+            <td>{item.update}</td>
           </tr>
         ))}
       </tbody>
