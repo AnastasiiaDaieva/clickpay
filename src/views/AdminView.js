@@ -8,7 +8,7 @@ import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
 
 const currentToken = JSON.parse(localStorage.getItem("user"))
   ? JSON.parse(localStorage.getItem("user")).token
-  : "";
+  : localStorage.setItem("user", JSON.stringify(""));
 axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
 
 function AdminView() {
@@ -26,6 +26,14 @@ function AdminView() {
   };
 
   useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      setCurrentUser(foundUser);
+    }
+  }, []);
+
+  useEffect(() => {
     setIsLoading(true);
 
     getTransactions()
@@ -38,16 +46,6 @@ function AdminView() {
       })
       .catch((error) => console.log(error))
       .finally(() => setIsLoading(false));
-  }, []);
-
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
-    if (loggedInUser) {
-      const foundUser = JSON.parse(loggedInUser);
-      setCurrentUser(foundUser);
-    } else {
-      localStorage.setItem("user", JSON.stringify(""));
-    }
   }, []);
 
   const updStatus = (newStatus, id) => {
