@@ -25,7 +25,7 @@ const LoginForm = lazy(() =>
 
 function App() {
   const [currentUser, setCurrentUser] = useState();
-
+  //
   return (
     <div className={s.App}>
       <Header />
