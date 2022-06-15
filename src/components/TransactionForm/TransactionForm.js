@@ -33,10 +33,7 @@ function TransactionForm({ setIsInProgress }) {
       cardNumber: cardnumber.split(" ").join("").slice(0, 6),
       holderName: holderName,
     };
-    const response = await axios.post(
-      "https://clickpay-backend.herokuapp.com/api/transactions",
-      operation
-    );
+    const response = await axios.post("/transactions", operation);
     console.log(response);
     setIsInProgress(false);
     reset();

@@ -6,10 +6,9 @@ import axios from "axios";
 function AdminLogout({ setCurrentUser }) {
   const handleClick = async () => {
     try {
-      await axios.get(
-        "https://clickpay-backend.herokuapp.com/api/users/logout"
-      );
+      await axios.get("/users/logout");
       setCurrentUser("");
+      localStorage.setItem("user", JSON.stringify(""));
     } catch (error) {
       console.log(error);
     }

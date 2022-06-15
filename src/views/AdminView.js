@@ -6,8 +6,10 @@ import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
 
-const getToken = JSON.parse(localStorage.getItem("user"));
-axios.defaults.headers.common.Authorization = `Bearer ${getToken.token}`;
+const currentToken = JSON.parse(localStorage.getItem("user"))
+  ? JSON.parse(localStorage.getItem("user")).token
+  : "";
+axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
 
 function AdminView() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,9 +18,7 @@ function AdminView() {
 
   const getTransactions = async () => {
     try {
-      const response = await axios.get(
-        "https://clickpay-backend.herokuapp.com/api/transactions"
-      );
+      const response = await axios.get("/transactions");
       return response;
     } catch (error) {
       console.log(error);
@@ -45,6 +45,8 @@ function AdminView() {
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
       setCurrentUser(foundUser);
+    } else {
+      localStorage.setItem("user", JSON.stringify(""));
     }
   }, []);
 
@@ -53,12 +55,9 @@ function AdminView() {
     console.log(newStatus);
 
     axios
-      .patch(
-        `https://clickpay-backend.herokuapp.com/api/transactions/${id}/status`,
-        {
-          status: newStatus,
-        }
-      )
+      .patch(`/transactions/${id}/status`, {
+        status: newStatus,
+      })
       .then((res) => {
         console.log(res.data);
         const data = res.data;

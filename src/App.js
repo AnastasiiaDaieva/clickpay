@@ -3,6 +3,10 @@ import s from "./App.module.scss";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
+import axios from "axios";
+
+axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
+// axios.defaults.baseURL = "http://localhost:5000/api";
 
 const HomepageView = lazy(() =>
   import("views/HomepageView" /*webpackChunkName: "home-view" */)
