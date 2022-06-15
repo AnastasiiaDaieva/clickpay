@@ -5,7 +5,6 @@ import { Route, Routes } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import axios from "axios";
 import { RequireAuth, GeneralAccess } from "helpers/checkAuth";
-import LoginForm from "components/Admin/LoginForm/LoginForm";
 import { useState, useEffect } from "react";
 
 axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
@@ -16,6 +15,12 @@ const HomepageView = lazy(() =>
 );
 const AdminView = lazy(() =>
   import("views/AdminView" /*webpackChunkName: "admin-view" */)
+);
+
+const LoginForm = lazy(() =>
+  import(
+    "components/Admin/LoginForm/LoginForm" /*webpackChunkName: "login-form" */
+  )
 );
 
 function App() {
