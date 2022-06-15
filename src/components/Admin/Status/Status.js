@@ -15,7 +15,6 @@ function Status({ status, updStatus, id }) {
   const handleChoice = (status) => {
     setChosenStatus(status);
     setModalIsOpen(true);
-    console.log(id);
     setShowIcons(false);
   };
   return (

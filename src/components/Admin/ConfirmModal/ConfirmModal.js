@@ -16,9 +16,7 @@ function ConfirmModal({ id, updStatus, status, setModalIsOpen }) {
   const confirmAction = (confirm) => {
     if (confirm) {
       updStatus(status, id);
-      console.log(confirm);
     } else {
-      console.log(confirm);
       setModalIsOpen(false);
     }
   };
