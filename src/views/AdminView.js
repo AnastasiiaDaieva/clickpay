@@ -5,8 +5,10 @@ import s from "./AdminView.module.scss";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
+import Filter from "components/Admin/Filter/Filter";
+import Search from "components/Admin/Search/Search";
+
 const currentToken = JSON.parse(localStorage.getItem("user")).token;
-console.log(currentToken);
 
 axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
 function AdminView({ setCurrentUser }) {
@@ -14,6 +16,32 @@ function AdminView({ setCurrentUser }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [transactions, setTransactions] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filterOptions = [
+    { value: "all", label: "All" },
+    { value: "pending", label: "Pending" },
+    { value: "rejected", label: "Rejected" },
+    { value: "approved", label: "Approved" },
+  ];
+  const [filterOption, setFilterOption] = useState(filterOptions[0]);
+
+  const handleFilter = (option) => {
+    setFilterOption(option);
+    localStorage.setItem("filter", option.value);
+  };
+  const getVisibleTransactions = () => {
+    const normalizedFilter = searchQuery.toLowerCase().trim();
+
+    return transactions.filter(
+      (trn) =>
+        trn.holderName.toLowerCase().includes(normalizedFilter) ||
+        trn.account.toString().includes(searchQuery.trim())
+    );
+  };
+
+  const visibleTransactions = getVisibleTransactions();
+  // const setSearchQuery = (text) => {};
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -21,6 +49,12 @@ function AdminView({ setCurrentUser }) {
       const foundUser = JSON.parse(loggedInUser);
       setCurrentUser(foundUser);
     }
+
+    // const setFilter = localStorage.getItem("filter");
+    // if (setFilter) {
+    //   const currentFilter = JSON.parse(setFilter);
+    //   setFilterOption( currentFilter );
+    // }
   }, []);
 
   const getTransactions = async () => {
@@ -73,6 +107,36 @@ function AdminView({ setCurrentUser }) {
       .finally(() => setIsLoading(false));
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+
+    const getLocalStorage = localStorage.getItem("filter");
+    console.log(getLocalStorage);
+
+    getTransactions()
+      .then((res) => {
+        const data = res.data.sort((a, b) =>
+          b.createdAt.localeCompare(a.createdAt)
+        );
+
+        const filtered = data.filter((item) => {
+          if (getLocalStorage === "pending") {
+            return item.status === "pending";
+          } else if (getLocalStorage === "rejected") {
+            return item.status === "rejected";
+          } else if (getLocalStorage === "approved") {
+            return item.status === "approved";
+          } else {
+            return data;
+          }
+        });
+        console.log("SORTED and FILTERED", data);
+        setTransactions(filtered);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setIsLoading(false));
+  }, []);
+
   // console.log(currentUser);
 
   return (
@@ -90,9 +154,17 @@ function AdminView({ setCurrentUser }) {
         />
       ) : (
         <>
-          {" "}
+          <Search setSearchQuery={setSearchQuery} />
+          <Filter
+            filterOptions={filterOptions}
+            filterOption={filterOption}
+            handleFilter={handleFilter}
+          />{" "}
           <AdminLogout setCurrentUser={setCurrentUser} />
-          <AdminTable transactions={transactions} updStatus={updStatus} />
+          <AdminTable
+            transactions={visibleTransactions}
+            updStatus={updStatus}
+          />
         </>
       )}
     </div>
