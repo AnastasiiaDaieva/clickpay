@@ -1,0 +1,71 @@
+.ConfirmModal {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 27px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 400;
+  border-radius: 15px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  -webkit-box-shadow: var(--shadow);
+  -moz-box-shadow: var(--shadow);
+}
+
+.ConfirmModal__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.ConfirmModal__heading {
+  margin-bottom: 20px;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 100;
+}
+
+.ConfirmModal__button {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .ConfirmModal {
+    height: 100vh;
+    width: 100vw;
+  }
+  .ConfirmModal__body {
+    padding-top: 70px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .ConfirmModal {
+    padding: 35px 25px;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+}
+
+@media screen and (min-width: 1280px) {
+}

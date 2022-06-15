@@ -14,22 +14,21 @@ function AdminView() {
   const [transactions, setTransactions] = useState([]);
   const [currentUser, setCurrentUser] = useState();
 
+  const getTransactions = async () => {
+    try {
+      const response = await axios.get(
+        "https://clickpay-backend.herokuapp.com/api/transactions"
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const getFunc = async () => {
-      try {
-        setIsLoading(true);
-        // const response = await axios.get(
-        //   "https://clickpay-backend.herokuapp.com/api/transactions"
-        // );
-        const response = await axios.get(
-          "http://localhost:5000/api/transactions"
-        );
-        return response;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getFunc()
+    setIsLoading(true);
+
+    getTransactions()
       .then((res) => {
         const data = res.data.sort((a, b) =>
           b.createdAt.localeCompare(a.createdAt)
@@ -49,8 +48,33 @@ function AdminView() {
     }
   }, []);
 
-  const updStatus = (status) => {
-    console.log(status);
+  const updStatus = (newStatus, id) => {
+    setIsLoading(true);
+    console.log(newStatus);
+
+    axios
+      .patch(
+        `https://clickpay-backend.herokuapp.com/api/transactions/${id}/status`,
+        {
+          status: newStatus,
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        const data = res.data;
+        return data;
+      })
+      .then((item) =>
+        setTransactions((prevItems) => {
+          const data = prevItems.filter((item) => item._id !== id);
+          const sortedData = data.sort((a, b) =>
+            b.createdAt.localeCompare(a.createdAt)
+          );
+          return [item, ...sortedData];
+        })
+      )
+      .catch((error) => console.log(error.message))
+      .finally(() => setIsLoading(false));
   };
 
   // console.log(currentUser);

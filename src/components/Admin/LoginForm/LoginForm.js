@@ -16,13 +16,12 @@ function LoginForm({ setCurrentUser }) {
     try {
       const { email, password } = data;
       const response = await axios.post(
-        "http://localhost:5000/api/users/login",
-        { email, password }
+        "https://clickpay-backend.herokuapp.com/api/users/login",
+        {
+          email,
+          password,
+        }
       );
-      // .post("https://clickpay-backend.herokuapp.com/api/users/login", {
-      //   email,
-      //   password,
-      // });
 
       setCurrentUser(response.data.user);
       localStorage.setItem("user", JSON.stringify(response.data.user));

@@ -79,24 +79,6 @@ function TransactionForm({ setIsInProgress }) {
             <div
               className={`${s.TransactionForm__group} ${s.TransactionForm__sum}`}
             >
-              {/* <Controller
-                control={control}
-                name="sum"
-                render={({ field: { onChange, onBlur, ref } }) => (
-                  <InputMask
-                    mask="9 999 999,99"
-                    onBlur={onBlur}
-                    placeholder="0 000 000,00"
-                    onChange={onChange}
-                    inputRef={ref}
-                    className={s.TransactionForm__entry}
-                    {...register("sum", {
-                      required: true,
-                      // pattern: sumRegEx,
-                    })}
-                  />
-                )}
-              />{" "} */}
               <input
                 type="number"
                 name="sum"

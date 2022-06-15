@@ -46,9 +46,17 @@ function AdminTable({ transactions, updStatus }) {
             <td>{item.cardNumber}</td>
             <td>{item.holderName}</td>
             <td>
-              <Status status={item.status} updStatus={updStatus} />
+              <Status
+                status={item.status}
+                updStatus={updStatus}
+                id={item._id}
+              />
             </td>
-            <td>{item.update}</td>
+            <td>
+              {item.createdAt === item.updatedAt
+                ? "-"
+                : convertDate(item.updatedAt)}
+            </td>
           </tr>
         ))}
       </tbody>

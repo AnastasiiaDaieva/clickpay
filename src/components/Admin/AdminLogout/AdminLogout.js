@@ -6,8 +6,8 @@ import axios from "axios";
 function AdminLogout({ setCurrentUser }) {
   const handleClick = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/users/logout"
+      await axios.get(
+        "https://clickpay-backend.herokuapp.com/api/users/logout"
       );
       setCurrentUser("");
     } catch (error) {
