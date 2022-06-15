@@ -4,6 +4,9 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import axios from "axios";
+import { RequireAuth, GeneralAccess } from "helpers/checkAuth";
+import LoginForm from "components/Admin/LoginForm/LoginForm";
+import { useState, useEffect } from "react";
 
 axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
 // axios.defaults.baseURL = "http://localhost:5000/api";
@@ -16,12 +19,13 @@ const AdminView = lazy(() =>
 );
 
 function App() {
+  const [currentUser, setCurrentUser] = useState();
+
   return (
     <div className={s.App}>
       <Header />
 
       <main>
-        {" "}
         <Suspense
           fallback={
             <Spinner
@@ -37,8 +41,23 @@ function App() {
           }
         >
           <Routes>
-            <Route path="/" element={<HomepageView />} />
-            <Route path="/admin" element={<AdminView />} />
+            <Route path="/" element={<HomepageView />} />{" "}
+            <Route
+              path="/login"
+              element={
+                <GeneralAccess redirectTo="/admin">
+                  <LoginForm setCurrentUser={setCurrentUser} />
+                </GeneralAccess>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <RequireAuth redirectTo="/login">
+                  <AdminView setCurrentUser={setCurrentUser} />
+                </RequireAuth>
+              }
+            />
           </Routes>
         </Suspense>
       </main>

@@ -5,16 +5,23 @@ import s from "./AdminView.module.scss";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
+const currentToken = JSON.parse(localStorage.getItem("user")).token;
+console.log(currentToken);
 
-const currentToken = JSON.parse(localStorage.getItem("user"))
-  ? JSON.parse(localStorage.getItem("user")).token
-  : localStorage.setItem("user", JSON.stringify(""));
 axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
-
-function AdminView() {
+function AdminView({ setCurrentUser }) {
+  // const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
   const [transactions, setTransactions] = useState([]);
-  const [currentUser, setCurrentUser] = useState();
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      setCurrentUser(foundUser);
+    }
+  }, []);
 
   const getTransactions = async () => {
     try {
@@ -24,14 +31,6 @@ function AdminView() {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
-    if (loggedInUser) {
-      const foundUser = JSON.parse(loggedInUser);
-      setCurrentUser(foundUser);
-    }
-  }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -91,14 +90,9 @@ function AdminView() {
         />
       ) : (
         <>
-          {currentUser ? (
-            <>
-              <AdminLogout setCurrentUser={setCurrentUser} />
-              <AdminTable transactions={transactions} updStatus={updStatus} />
-            </>
-          ) : (
-            <LoginForm setCurrentUser={setCurrentUser} />
-          )}
+          {" "}
+          <AdminLogout setCurrentUser={setCurrentUser} />
+          <AdminTable transactions={transactions} updStatus={updStatus} />
         </>
       )}
     </div>
