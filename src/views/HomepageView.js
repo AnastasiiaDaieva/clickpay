@@ -4,11 +4,14 @@ import { useState } from "react";
 
 function HomepageView() {
   const [isInProgress, setIsInProgress] = useState(true);
-  const [isSuccessful, setIsSuccessful] = useState(true);
+  const [isSuccessful, setIsSuccessful] = useState("");
   return (
     <>
       {isInProgress ? (
-        <TransactionForm setIsInProgress={setIsInProgress} />
+        <TransactionForm
+          setIsInProgress={setIsInProgress}
+          setIsSuccessful={setIsSuccessful}
+        />
       ) : (
         <Notification
           isSuccessful={isSuccessful}

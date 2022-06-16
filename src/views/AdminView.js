@@ -3,7 +3,7 @@ import LoginForm from "components/Admin/LoginForm/LoginForm";
 import { useState, useEffect } from "react";
 import s from "./AdminView.module.scss";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
+import Loader from "components/Loader/Loader";
 import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
 import Filter from "components/Admin/Filter/Filter";
 import Search from "components/Admin/Search/Search";
@@ -142,16 +142,7 @@ function AdminView({ setCurrentUser }) {
   return (
     <div className={s.AdminView}>
       {isLoading ? (
-        <Spinner
-          animation="grow"
-          variant="dark"
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
+        <Loader />
       ) : (
         <>
           <Search setSearchQuery={setSearchQuery} />

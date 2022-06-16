@@ -2,7 +2,7 @@ import Header from "components/Header/Header";
 import s from "./App.module.scss";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Spinner } from "react-bootstrap";
+import Loader from "components/Loader/Loader";
 import axios from "axios";
 import { RequireAuth, GeneralAccess } from "helpers/checkAuth";
 import { useState, useEffect } from "react";
@@ -31,20 +31,7 @@ function App() {
       <Header />
 
       <main>
-        <Suspense
-          fallback={
-            <Spinner
-              animation="grow"
-              variant="dark"
-              style={{
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            />
-          }
-        >
+        <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<HomepageView />} />{" "}
             <Route

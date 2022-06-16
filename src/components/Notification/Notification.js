@@ -4,6 +4,7 @@ import s from "./Notification.module.scss";
 
 function Notification({ isSuccessful, setIsInProgress }) {
   const handleClick = () => {
+    window.clearInterval();
     setIsInProgress(true);
   };
   return (
