@@ -7,8 +7,8 @@ import axios from "axios";
 import { RequireAuth, GeneralAccess } from "helpers/checkAuth";
 import { useState, useEffect } from "react";
 
-axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
-// axios.defaults.baseURL = "http://localhost:5000/api";
+// axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
+axios.defaults.baseURL = "http://localhost:5000/api";
 
 const HomepageView = lazy(() =>
   import("views/HomepageView" /*webpackChunkName: "home-view" */)
@@ -17,10 +17,8 @@ const AdminView = lazy(() =>
   import("views/AdminView" /*webpackChunkName: "admin-view" */)
 );
 
-const LoginForm = lazy(() =>
-  import(
-    "components/Admin/LoginForm/LoginForm" /*webpackChunkName: "login-form" */
-  )
+const LoginView = lazy(() =>
+  import("views/LoginView" /*webpackChunkName: "login-view" */)
 );
 
 function App() {
@@ -38,7 +36,7 @@ function App() {
               path="/login"
               element={
                 <GeneralAccess redirectTo="/admin">
-                  <LoginForm setCurrentUser={setCurrentUser} />
+                  <LoginView setCurrentUser={setCurrentUser} />
                 </GeneralAccess>
               }
             />

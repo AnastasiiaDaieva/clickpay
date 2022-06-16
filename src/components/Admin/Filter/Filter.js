@@ -1,9 +1,10 @@
 import { DropdownButton, Dropdown, InputGroup } from "react-bootstrap";
 import { nanoid } from "nanoid";
+import s from "./Filter.module.scss";
 
 function Filter({ filterOptions, handleFilter, filterOption }) {
   return (
-    <div>
+    <div className={s.Filter}>
       <InputGroup className="mb-3">
         <DropdownButton
           variant="outline-secondary"
