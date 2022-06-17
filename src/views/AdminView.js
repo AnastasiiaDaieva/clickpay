@@ -106,6 +106,7 @@ function AdminView({ setCurrentUser }) {
         console.log(newTrns);
         const newArray = newTrns;
         setTransactions(newArray);
+        setCurrentPage(currPage);
       })
       .catch((error) => console.log(error))
       .finally(() => setIsLoading(false));

@@ -45,8 +45,11 @@ function ConfirmModal({ id, updStatus, status, setModalIsOpen }) {
       <div className={s.ConfirmModal}>
         <BiX className={s.ConfirmModal__close} onClick={closeModal} />
         <div className={s.ConfirmModal__body}>
-          Are you sure you want to{" "}
-          {status === "rejected" ? "reject" : "approve"} the transaction?
+          <p className={s.ConfirmModal__text}>
+            {" "}
+            Are you sure you want to{" "}
+            {status === "rejected" ? "reject" : "approve"} the transaction?
+          </p>
           <div className={s.ConfirmModal__controllers}>
             <Button
               className={s.ConfirmModal__button}
