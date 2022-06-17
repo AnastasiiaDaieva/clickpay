@@ -20,12 +20,14 @@ function LoginForm({ setCurrentUser }) {
           email,
           password,
         })
-        .catch((error) => console.log(error));
-
+        .catch((error) =>
+          console.log("LOGIN RES CATCH", error.response.data.message)
+        );
       setCurrentUser(response.data.user);
+
       localStorage.setItem("user", JSON.stringify(response.data.user));
     } catch (error) {
-      console.log(error);
+      console.log("LOGIN CATCH", error.status, error);
     }
 
     reset();

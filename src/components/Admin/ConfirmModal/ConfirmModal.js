@@ -41,7 +41,7 @@ function ConfirmModal({ id, updStatus, status, setModalIsOpen }) {
   };
 
   return createPortal(
-    <div className={s.Overlay} onClick={closeOverlay}>
+    <div className="overlay" onClick={closeOverlay}>
       <div className={s.ConfirmModal}>
         <BiX className={s.ConfirmModal__close} onClick={closeModal} />
         <div className={s.ConfirmModal__body}>

@@ -24,12 +24,24 @@
   width: 100%;
 }
 
+.Notification__text,
+.Notification__heading {
+  text-align: left;
+}
+
 .Notification__icon {
   position: absolute;
+
   top: -20px;
   left: -20px;
 }
-
+.Notification__close {
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  right: 15px;
+  top: 15px;
+}
 .Notification__submit {
   margin-top: auto;
 }

@@ -4,11 +4,11 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import Loader from "components/Loader/Loader";
 import axios from "axios";
-import { RequireAuth, GeneralAccess } from "helpers/checkAuth";
+import { RequireAuth, GeneralAccess } from "helpers/CheckAuth";
 import { useState } from "react";
 
-axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
-// axios.defaults.baseURL = "http://localhost:5000/api";
+// axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
+axios.defaults.baseURL = "http://localhost:5000/api";
 
 const HomepageView = lazy(() =>
   import("views/HomepageView" /*webpackChunkName: "home-view" */)
@@ -23,6 +23,9 @@ const LoginView = lazy(() =>
 
 function App() {
   const [currentUser, setCurrentUser] = useState();
+  console.log(currentUser);
+  const [errorCode, setErrorCode] = useState(null);
+
   //
   return (
     <div className={s.App}>
@@ -43,8 +46,17 @@ function App() {
             <Route
               path="/admin"
               element={
-                <RequireAuth redirectTo="/login">
-                  <AdminView setCurrentUser={setCurrentUser} />
+                <RequireAuth
+                  redirectTo="/login"
+                  errorCode={errorCode}
+                  setCurrentUser={setCurrentUser}
+                  setErrorCode={setErrorCode}
+                >
+                  <AdminView
+                    errorCode={errorCode}
+                    setCurrentUser={setCurrentUser}
+                    setErrorCode={setErrorCode}
+                  />
                 </RequireAuth>
               }
             />

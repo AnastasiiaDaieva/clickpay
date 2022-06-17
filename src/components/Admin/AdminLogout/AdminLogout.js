@@ -11,6 +11,7 @@ function AdminLogout({ setCurrentUser }) {
       localStorage.setItem("user", JSON.stringify(""));
     } catch (error) {
       console.log(error);
+      console.log("LOGOUT CATCH", error.response.data.message);
     }
   };
   return (

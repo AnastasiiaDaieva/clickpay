@@ -6,16 +6,16 @@ import Loader from "components/Loader/Loader";
 import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
 import Filter from "components/Admin/Filter/Filter";
 import Search from "components/Admin/Search/Search";
-import ReactPaginate from "react-paginate";
+import { Navigate } from "react-router";
 import PaginatedTransactions from "components/Admin/AdminTable/PaginatedTransactions";
 
 const currentToken = JSON.parse(localStorage.getItem("user")).token;
 
 axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
-function AdminView({ setCurrentUser }) {
+
+function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
   // const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
   const [transactions, setTransactions] = useState([]);
   const [searchQuery, setSearchQuery] = useState(" ");
   const [pageCount, setPageCount] = useState(1);
@@ -42,12 +42,21 @@ function AdminView({ setCurrentUser }) {
           : `/transactions/status/${option.value}?page=${currentPage}&limit=${itemsPerPage}`
       )
       .then((res) => {
+        setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
         const data = res.data.transactions;
-        console.log("statusdata", data);
+        console.log("statusdata", res);
 
         setTransactions(data);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        if (error.response.data.message.toLowerCase() === "not authorized") {
+          setCurrentUser("");
+          localStorage.setItem("user", JSON.stringify(""));
+          setErrorCode(401);
+        } else {
+          console.log("FILTER CATCH", error.response.data.message);
+        }
+      })
       .finally(() => setIsLoading(false));
   };
   const getVisibleTransactions = () => {
@@ -89,7 +98,14 @@ function AdminView({ setCurrentUser }) {
       );
       return response;
     } catch (error) {
-      console.log(error);
+      // console.log(error.message);
+      if (error.response.data.message.toLowerCase() === "not authorized") {
+        setCurrentUser("");
+        localStorage.setItem("user", JSON.stringify(""));
+        setErrorCode(401);
+      } else {
+        console.log("GET ORIGINAL CATCH", error.response.data.message);
+      }
     }
   };
 
@@ -108,7 +124,9 @@ function AdminView({ setCurrentUser }) {
         setTransactions(newArray);
         setCurrentPage(currPage);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log("PAGE CLICK CATCH", error.response.data.message);
+      })
       .finally(() => setIsLoading(false));
     // setCurrentPage(currPage);
   };
@@ -127,13 +145,15 @@ function AdminView({ setCurrentUser }) {
         setTransactions(data);
         setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        console.log("GET UE CATCH", error.response.data.message)
+      )
       .finally(() => setIsLoading(false));
   }, [itemsPerPage]);
 
   const updStatus = (newStatus, id) => {
     setIsLoading(true);
-    console.log(newStatus);
+    // console.log(newStatus);
 
     axios
       .patch(`/transactions/${id}/status`, {
@@ -150,14 +170,15 @@ function AdminView({ setCurrentUser }) {
         setTransactions((prevItems) => {
           const data = prevItems.filter((item) => item._id !== id);
 
-          const firstPart = prevItems.splice(0, res, trn);
-          console.log("SPLICE", firstPart);
-          const secondPart = prevItems.slice();
-          const sortedData = [firstPart, trn, secondPart];
+          const sortedData = transactions.splice(res, res, trn);
+          console.log("SPLICE", sortedData);
+          setTransactions(sortedData);
           return data;
         });
       })
-      .catch((error) => console.log(error.message))
+      .catch((error) =>
+        console.log("UPDSTATUS CATCH", error.response.data.message)
+      )
       .finally(() => setIsLoading(false));
   };
 
@@ -184,7 +205,9 @@ function AdminView({ setCurrentUser }) {
         // console.log("SORTED and FILTERED", data);
         setTransactions(filtered);
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        console.log("REFRESH CATCH", error.response.data.message)
+      )
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -192,12 +215,12 @@ function AdminView({ setCurrentUser }) {
 
   return (
     <>
-      {" "}
+      {errorCode === 401 && <Navigate to="/login" />}
       <div className={s.AdminView}>
-        {isLoading ? (
+        {isLoading || transactions === undefined ? (
           <Loader />
         ) : (
-          <>
+          <div>
             <div className={s.AdminView__wrapper}>
               <Search setSearchQuery={setSearchQuery} />
               <Filter
@@ -216,7 +239,7 @@ function AdminView({ setCurrentUser }) {
               pageCount={pageCount}
               handlePageClick={handlePageClick}
             />
-          </>
+          </div>
         )}
       </div>
     </>
