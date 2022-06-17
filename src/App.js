@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Loader from "components/Loader/Loader";
 import axios from "axios";
 import { RequireAuth, GeneralAccess } from "helpers/checkAuth";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
 axios.defaults.baseURL = "http://localhost:5000/api";

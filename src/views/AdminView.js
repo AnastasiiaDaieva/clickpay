@@ -17,10 +17,11 @@ function AdminView({ setCurrentUser }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [transactions, setTransactions] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [pageCount, setPageCount] = useState();
+  const [searchQuery, setSearchQuery] = useState(" ");
+  const [pageCount, setPageCount] = useState(1);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
 
   const filterOptions = [
     { value: "all", label: "All" },
@@ -41,9 +42,7 @@ function AdminView({ setCurrentUser }) {
           : `/transactions/status/${option.value}?page=${currentPage}&limit=${itemsPerPage}`
       )
       .then((res) => {
-        const data = res.data.transactions.sort((a, b) =>
-          b.createdAt.localeCompare(a.createdAt)
-        );
+        const data = res.data.transactions;
         console.log("statusdata", data);
 
         setTransactions(data);
@@ -53,7 +52,7 @@ function AdminView({ setCurrentUser }) {
   };
   const getVisibleTransactions = () => {
     const normalizedFilter = searchQuery.toLowerCase().trim();
-    console.log(normalizedFilter);
+    // console.log(normalizedFilter);
 
     return transactions.filter(
       (trn) =>
@@ -61,7 +60,6 @@ function AdminView({ setCurrentUser }) {
         trn.account.toString().includes(searchQuery.trim())
     );
   };
-  const itemsPerPage = 25;
   const visibleTransactions = getVisibleTransactions();
   // const setSearchQuery = (text) => {};
   // console.log("visible", visibleTransactions);
@@ -78,7 +76,7 @@ function AdminView({ setCurrentUser }) {
     if (setFilter) {
       const currentFilter = JSON.parse(setFilter);
       setFilterOption(currentFilter);
-      console.log("curfil", currentFilter.label);
+      // console.log("curfil", currentFilter.label);
     }
 
     setIsLoading(false);
@@ -96,16 +94,22 @@ function AdminView({ setCurrentUser }) {
   };
 
   const handlePageClick = async (event) => {
-    console.log(event.selected);
     setIsLoading(true);
-    let currentPage = event.selected + 1;
-    getTransactions(currentPage)
-      .then((res) => {
-        setTransactions(res.data.transactions);
-        // console.log(transactions);
+    console.log(event.selected);
+    console.log(currentPage);
+    let currPage = event.selected + 1;
+    console.log(currentPage);
+
+    getTransactions(currPage)
+      .then((res) => res.data.transactions)
+      .then((newTrns) => {
+        console.log(newTrns);
+        const newArray = newTrns;
+        setTransactions(newArray);
       })
       .catch((error) => console.log(error))
       .finally(() => setIsLoading(false));
+    // setCurrentPage(currPage);
   };
 
   useEffect(() => {
@@ -113,7 +117,7 @@ function AdminView({ setCurrentUser }) {
 
     getTransactions()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
 
         const data = res.data.transactions.sort((a, b) =>
           b.createdAt.localeCompare(a.createdAt)
@@ -124,7 +128,7 @@ function AdminView({ setCurrentUser }) {
       })
       .catch((error) => console.log(error))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [itemsPerPage]);
 
   const updStatus = (newStatus, id) => {
     setIsLoading(true);
@@ -136,18 +140,22 @@ function AdminView({ setCurrentUser }) {
       })
       .then((res) => {
         console.log(res.data);
-        const data = res.data.transactions;
+        const data = res.data;
         return data;
       })
-      .then((item) =>
+      .then((trn) => {
+        const res = transactions.findIndex((item) => item._id === id);
+        console.log("obj", res);
         setTransactions((prevItems) => {
           const data = prevItems.filter((item) => item._id !== id);
-          const sortedData = data.sort((a, b) =>
-            b.createdAt.localeCompare(a.createdAt)
-          );
-          return [item, ...sortedData];
-        })
-      )
+
+          const firstPart = prevItems.splice(0, res, trn);
+          console.log("SPLICE", firstPart);
+          const secondPart = prevItems.slice();
+          const sortedData = [firstPart, trn, secondPart];
+          return data;
+        });
+      })
       .catch((error) => console.log(error.message))
       .finally(() => setIsLoading(false));
   };
@@ -155,14 +163,12 @@ function AdminView({ setCurrentUser }) {
   useEffect(() => {
     setIsLoading(true);
     const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
-    console.log("LS", getLocalStorage);
+    // console.log("LS", getLocalStorage);
 
     getTransactions()
       .then((res) => {
-        const data = res.data.transactions.sort((a, b) =>
-          b.createdAt.localeCompare(a.createdAt)
-        );
-        console.log(data);
+        const data = res.data.transactions;
+        // console.log(data);
         const filtered = data.filter((item) => {
           if (getLocalStorage.value === "pending") {
             return item.status === "pending";
@@ -174,7 +180,7 @@ function AdminView({ setCurrentUser }) {
             return data;
           }
         });
-        console.log("SORTED and FILTERED", data);
+        // console.log("SORTED and FILTERED", data);
         setTransactions(filtered);
       })
       .catch((error) => console.log(error))
@@ -204,14 +210,14 @@ function AdminView({ setCurrentUser }) {
               transactions={visibleTransactions}
               updStatus={updStatus}
             />
+            <PaginatedTransactions
+              itemsPerPage={itemsPerPage}
+              pageCount={pageCount}
+              handlePageClick={handlePageClick}
+            />
           </>
         )}
       </div>
-      <PaginatedTransactions
-        itemsPerPage={itemsPerPage}
-        pageCount={pageCount}
-        handlePageClick={handlePageClick}
-      />
     </>
   );
 }
