@@ -1,8 +1,9 @@
 import s from "./Search.module.scss";
 import { BsXCircleFill } from "react-icons/bs";
 
-function Search({ setSearchQuery }) {
+function Search({ setSearchQuery, searchQuery }) {
   const onChange = (e) => {
+    localStorage.setItem("query", e.currentTarget.value);
     setSearchQuery(e.currentTarget.value);
   };
   return (
@@ -15,6 +16,7 @@ function Search({ setSearchQuery }) {
           placeholder="search query"
           onChange={onChange}
           className={s.Search__input}
+          value={searchQuery}
         />
         {/* <button className={s.Filter__clear} onClick={onClear}>
         <BsXCircleFill />

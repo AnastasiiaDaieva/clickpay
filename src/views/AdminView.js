@@ -17,11 +17,29 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
   // const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(" ");
+  const [searchQuery, setSearchQuery] = useState("");
   const [pageCount, setPageCount] = useState(1);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
+
+  const getTransactions = async (page) => {
+    try {
+      const response = await axios.get(
+        `/transactions?page=${page}&limit=${itemsPerPage}`
+      );
+      return response;
+    } catch (error) {
+      // console.log(error.message);
+      if (error.response.data.message.toLowerCase() === "not authorized") {
+        setCurrentUser("");
+        localStorage.setItem("user", JSON.stringify(""));
+        setErrorCode(401);
+      } else {
+        console.log("GET ORIGINAL CATCH", error.response.data.message);
+      }
+    }
+  };
 
   const filterOptions = [
     { value: "all", label: "All" },
@@ -62,12 +80,14 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
   const getVisibleTransactions = () => {
     const normalizedFilter = searchQuery.toLowerCase().trim();
     // console.log(normalizedFilter);
-
-    return transactions.filter(
-      (trn) =>
-        trn.holderName.toLowerCase().includes(normalizedFilter) ||
-        trn.account.toString().includes(searchQuery.trim())
-    );
+    if (transactions) {
+      console.log(transactions);
+      return transactions.filter(
+        (trn) =>
+          trn.holderName.toLowerCase().includes(normalizedFilter) ||
+          trn.account.toString().includes(searchQuery.trim())
+      );
+    }
   };
   const visibleTransactions = getVisibleTransactions();
   // const setSearchQuery = (text) => {};
@@ -88,26 +108,14 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
       // console.log("curfil", currentFilter.label);
     }
 
+    const setQuery = localStorage.getItem("query");
+    if (setQuery) {
+      setSearchQuery(setQuery);
+      // console.log("curfil", currentFilter.label);
+    }
+
     setIsLoading(false);
   }, [setCurrentUser, setFilterOption]);
-
-  const getTransactions = async (page) => {
-    try {
-      const response = await axios.get(
-        `/transactions?page=${page}&limit=${itemsPerPage}`
-      );
-      return response;
-    } catch (error) {
-      // console.log(error.message);
-      if (error.response.data.message.toLowerCase() === "not authorized") {
-        setCurrentUser("");
-        localStorage.setItem("user", JSON.stringify(""));
-        setErrorCode(401);
-      } else {
-        console.log("GET ORIGINAL CATCH", error.response.data.message);
-      }
-    }
-  };
 
   const handlePageClick = async (event) => {
     setIsLoading(true);
@@ -149,7 +157,7 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
         console.log("GET UE CATCH", error.response.data.message)
       )
       .finally(() => setIsLoading(false));
-  }, [itemsPerPage]);
+  }, []);
 
   const updStatus = (newStatus, id) => {
     setIsLoading(true);
@@ -165,16 +173,25 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
         return data;
       })
       .then((trn) => {
-        const res = transactions.findIndex((item) => item._id === id);
-        console.log("obj", res);
-        setTransactions((prevItems) => {
-          const data = prevItems.filter((item) => item._id !== id);
+        console.log(trn);
+        const idx = transactions.findIndex((item) => item._id === id);
+        console.log("obj", idx);
+        let items = [...transactions];
+        let item = { ...transactions[idx] };
+        // 2. Make a shallow copy of the item you want to mutate
+        // 3. Replace the property you're intested in
+        item.status = trn.status;
+        item.updatedAt = trn.updatedAt;
 
-          const sortedData = transactions.splice(res, res, trn);
-          console.log("SPLICE", sortedData);
-          setTransactions(sortedData);
-          return data;
-        });
+        // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+        items[idx] = item;
+        // 5. Set the state to our new copy
+        setTransactions(items);
+
+        // const sortedData = transactions.splice(res, res, trn);
+        // console.log("SPLICE", sortedData);
+        // setTransactions(sortedData);
+        // return data;
       })
       .catch((error) =>
         console.log("UPDSTATUS CATCH", error.response.data.message)
@@ -190,7 +207,7 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
     getTransactions()
       .then((res) => {
         const data = res.data.transactions;
-        // console.log(data);
+        console.log(data);
         const filtered = data.filter((item) => {
           if (getLocalStorage.value === "pending") {
             return item.status === "pending";
@@ -216,32 +233,37 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
   return (
     <>
       {errorCode === 401 && <Navigate to="/login" />}
-      <div className={s.AdminView}>
-        {isLoading || transactions === undefined ? (
-          <Loader />
-        ) : (
-          <div>
-            <div className={s.AdminView__wrapper}>
-              <Search setSearchQuery={setSearchQuery} />
-              <Filter
-                filterOptions={filterOptions}
-                filterOption={filterOption}
-                handleFilter={handleFilter}
-              />{" "}
+      {visibleTransactions && (
+        <div className={s.AdminView}>
+          {isLoading || transactions === undefined ? (
+            <Loader />
+          ) : (
+            <div>
+              <div className={s.AdminView__wrapper}>
+                <Search
+                  setSearchQuery={setSearchQuery}
+                  searchQuery={searchQuery}
+                />
+                <Filter
+                  filterOptions={filterOptions}
+                  filterOption={filterOption}
+                  handleFilter={handleFilter}
+                />{" "}
+              </div>
+              <AdminLogout setCurrentUser={setCurrentUser} />
+              <AdminTable
+                transactions={visibleTransactions}
+                updStatus={updStatus}
+              />
+              {/* <PaginatedTransactions
+                itemsPerPage={itemsPerPage}
+                pageCount={pageCount}
+                handlePageClick={handlePageClick}
+              /> */}
             </div>
-            <AdminLogout setCurrentUser={setCurrentUser} />
-            <AdminTable
-              transactions={visibleTransactions}
-              updStatus={updStatus}
-            />
-            <PaginatedTransactions
-              itemsPerPage={itemsPerPage}
-              pageCount={pageCount}
-              handlePageClick={handlePageClick}
-            />
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
