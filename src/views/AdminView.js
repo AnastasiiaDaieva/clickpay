@@ -13,7 +13,7 @@ const currentToken = JSON.parse(localStorage.getItem("user")).token;
 
 axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
 
-function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
+function AdminView({ setCurrentUser, currentUser, errorCode, setErrorCode }) {
   // const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
@@ -30,13 +30,11 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
       );
       return response;
     } catch (error) {
-      // console.log(error.message);
+      console.log("GET ORIGINAL CATCH", error.response.data.message);
       if (error.response.data.message.toLowerCase() === "not authorized") {
         setCurrentUser("");
         localStorage.setItem("user", JSON.stringify(""));
         setErrorCode(401);
-      } else {
-        console.log("GET ORIGINAL CATCH", error.response.data.message);
       }
     }
   };
@@ -62,17 +60,16 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
       .then((res) => {
         setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
         const data = res.data.transactions;
-        console.log("statusdata", res);
+        // console.log("statusdata", res);
 
         setTransactions(data);
       })
       .catch((error) => {
+        console.log("FILTER CATCH", error.response.data.message);
         if (error.response.data.message.toLowerCase() === "not authorized") {
           setCurrentUser("");
           localStorage.setItem("user", JSON.stringify(""));
           setErrorCode(401);
-        } else {
-          console.log("FILTER CATCH", error.response.data.message);
         }
       })
       .finally(() => setIsLoading(false));
@@ -81,7 +78,7 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
     const normalizedFilter = searchQuery.toLowerCase().trim();
     // console.log(normalizedFilter);
     if (transactions) {
-      console.log(transactions);
+      // console.log(transactions);
       return transactions.filter(
         (trn) =>
           trn.holderName.toLowerCase().includes(normalizedFilter) ||
@@ -115,7 +112,7 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
     }
 
     setIsLoading(false);
-  }, [setCurrentUser, setFilterOption]);
+  }, []);
 
   const handlePageClick = async (event) => {
     setIsLoading(true);
@@ -127,13 +124,18 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
     getTransactions(currPage)
       .then((res) => res.data.transactions)
       .then((newTrns) => {
-        console.log(newTrns);
+        // console.log(newTrns);
         const newArray = newTrns;
         setTransactions(newArray);
         setCurrentPage(currPage);
       })
       .catch((error) => {
         console.log("PAGE CLICK CATCH", error.response.data.message);
+        if (error.response.data.message.toLowerCase() === "not authorized") {
+          setCurrentUser("");
+          localStorage.setItem("user", JSON.stringify(""));
+          setErrorCode(401);
+        }
       })
       .finally(() => setIsLoading(false));
     // setCurrentPage(currPage);
@@ -153,9 +155,14 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
         setTransactions(data);
         setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
       })
-      .catch((error) =>
-        console.log("GET UE CATCH", error.response.data.message)
-      )
+      .catch((error) => {
+        console.log("GET UE CATCH", error.response.data.message);
+        if (error.response.data.message.toLowerCase() === "not authorized") {
+          setCurrentUser("");
+          localStorage.setItem("user", JSON.stringify(""));
+          setErrorCode(401);
+        }
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -168,34 +175,31 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
         status: newStatus,
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         const data = res.data;
         return data;
       })
       .then((trn) => {
-        console.log(trn);
+        // console.log(trn);
         const idx = transactions.findIndex((item) => item._id === id);
-        console.log("obj", idx);
+        // console.log("obj", idx);
         let items = [...transactions];
         let item = { ...transactions[idx] };
-        // 2. Make a shallow copy of the item you want to mutate
-        // 3. Replace the property you're intested in
+
         item.status = trn.status;
         item.updatedAt = trn.updatedAt;
 
-        // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
         items[idx] = item;
-        // 5. Set the state to our new copy
         setTransactions(items);
-
-        // const sortedData = transactions.splice(res, res, trn);
-        // console.log("SPLICE", sortedData);
-        // setTransactions(sortedData);
-        // return data;
       })
-      .catch((error) =>
-        console.log("UPDSTATUS CATCH", error.response.data.message)
-      )
+      .catch((error) => {
+        console.log("UPDSTATUS CATCH", error.response.data.message);
+        if (error.response.data.message.toLowerCase() === "not authorized") {
+          setCurrentUser("");
+          localStorage.setItem("user", JSON.stringify(""));
+          setErrorCode(401);
+        }
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -207,7 +211,7 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
     getTransactions()
       .then((res) => {
         const data = res.data.transactions;
-        console.log(data);
+        // console.log(data);
         const filtered = data.filter((item) => {
           if (getLocalStorage.value === "pending") {
             return item.status === "pending";
@@ -222,9 +226,14 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
         // console.log("SORTED and FILTERED", data);
         setTransactions(filtered);
       })
-      .catch((error) =>
-        console.log("REFRESH CATCH", error.response.data.message)
-      )
+      .catch((error) => {
+        console.log("REFRESH CATCH", error.response.data.message);
+        if (error.response.data.message.toLowerCase() === "not authorized") {
+          setCurrentUser("");
+          localStorage.setItem("user", JSON.stringify(""));
+          setErrorCode(401);
+        }
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -233,7 +242,7 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
   return (
     <>
       {errorCode === 401 && <Navigate to="/login" />}
-      {visibleTransactions && (
+      {visibleTransactions.length > 0 && (
         <div className={s.AdminView}>
           {isLoading || transactions === undefined ? (
             <Loader />
@@ -250,7 +259,10 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
                   handleFilter={handleFilter}
                 />{" "}
               </div>
-              <AdminLogout setCurrentUser={setCurrentUser} />
+              <AdminLogout
+                setCurrentUser={setCurrentUser}
+                setErrorCode={setErrorCode}
+              />
               <AdminTable
                 transactions={visibleTransactions}
                 updStatus={updStatus}
@@ -264,6 +276,8 @@ function AdminView({ setCurrentUser, errorCode, setErrorCode }) {
           )}
         </div>
       )}
+
+      {/* {visibleTransactions.length === 0 && "no transactions were found :("} */}
     </>
   );
 }

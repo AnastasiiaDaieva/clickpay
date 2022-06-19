@@ -37,7 +37,7 @@ function TransactionForm({ setIsInProgress, setIsSuccessful }) {
     };
     const response = await axios
       .post("/transactions", operation)
-      .catch((error) => console.log(error),);
+      .catch((error) => console.log(error));
 
     let interval = setInterval(async () => {
       const getUpdate = await axios

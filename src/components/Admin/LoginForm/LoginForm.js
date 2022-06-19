@@ -4,7 +4,7 @@ import s from "./LoginForm.module.scss";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-function LoginForm({ setCurrentUser }) {
+function LoginForm({ setCurrentUser, setErrorCode }) {
   const {
     register,
     handleSubmit,
@@ -20,9 +20,9 @@ function LoginForm({ setCurrentUser }) {
           email,
           password,
         })
-        .catch((error) =>
-          console.log("LOGIN RES CATCH", error.response.data.message)
-        );
+        .catch((error) => {
+          console.log("LOGIN RES CATCH", error.response.data.message);
+        });
       setCurrentUser(response.data.user);
 
       localStorage.setItem("user", JSON.stringify(response.data.user));

@@ -6,7 +6,7 @@ function LoginView({ setCurrentUser, errorCode, setErrorCode }) {
   }
   return (
     <>
-      <LoginForm setCurrentUser={setCurrentUser} />
+      <LoginForm setCurrentUser={setCurrentUser} setErrorCode={setErrorCode} />
     </>
   );
 }

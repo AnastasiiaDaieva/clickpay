@@ -3,15 +3,19 @@ import { Container, Button } from "react-bootstrap";
 import s from "./AdminLogout.module.scss";
 import axios from "axios";
 
-function AdminLogout({ setCurrentUser }) {
+function AdminLogout({ setCurrentUser, setErrorCode }) {
   const handleClick = async () => {
     try {
       await axios.get("/users/logout");
       setCurrentUser("");
       localStorage.setItem("user", JSON.stringify(""));
     } catch (error) {
-      console.log(error);
       console.log("LOGOUT CATCH", error.response.data.message);
+      if (error.response.data.message.toLowerCase() === "not authorized") {
+        setCurrentUser("");
+        localStorage.setItem("user", JSON.stringify(""));
+        setErrorCode(401);
+      }
     }
   };
   return (

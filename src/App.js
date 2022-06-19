@@ -24,7 +24,7 @@ const LoginView = lazy(() =>
 
 function App() {
   const [currentUser, setCurrentUser] = useState();
-  console.log(currentUser);
+  // console.log(currentUser);
   const [errorCode, setErrorCode] = useState(null);
 
   //
@@ -40,7 +40,10 @@ function App() {
               path="/login"
               element={
                 <GeneralAccess redirectTo="/admin">
-                  <LoginView setCurrentUser={setCurrentUser} />
+                  <LoginView
+                    setCurrentUser={setCurrentUser}
+                    setErrorCode={setErrorCode}
+                  />
                 </GeneralAccess>
               }
             />
@@ -57,6 +60,7 @@ function App() {
                     errorCode={errorCode}
                     setCurrentUser={setCurrentUser}
                     setErrorCode={setErrorCode}
+                    currentUser={currentUser}
                   />
                 </RequireAuth>
               }
