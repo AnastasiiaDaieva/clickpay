@@ -69,13 +69,10 @@ function TransactionForm({ setIsInProgress, setIsSuccessful }) {
         <div className={s.TransactionForm__wrapper}>
           {" "}
           <FormText
-            headingFirstPart="Lorem "
-            headingSecondPart="sit amet consectetur"
-            coloredHeading="ipsum dolor"
-            text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia fuga id
-        libero provident et inventore. Harum voluptatem modi labore at. Lorem
-        ipsum dolor sit amet consectetur adipisicing elit. Officia fuga id
-        libero provident et inventore. Harum voluptatem modi labore at."
+            headingFirstPart="Welcome to"
+            headingSecondPart=""
+            coloredHeading="ClickPay"
+            text="Clickpay has a fully automated data validation process. Pay by one click."
           />
           <div className={s.TransactionForm__payment_info}>
             <div className={s.TransactionForm__payment_account}>
