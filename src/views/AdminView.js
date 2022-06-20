@@ -126,6 +126,8 @@ function AdminView() {
     if (setFilter) {
       const currentFilter = JSON.parse(setFilter);
       setFilterOption(currentFilter);
+    } else {
+      localStorage.setItem("filter", JSON.stringify(filterOptions[0]));
     }
 
     const setQuery = localStorage.getItem("query");
