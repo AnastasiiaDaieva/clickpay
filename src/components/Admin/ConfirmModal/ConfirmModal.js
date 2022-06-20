@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import s from "./ConfirmModal.module.scss";
 import { useEffect } from "react";
 import { BiX } from "react-icons/bi";
+import transactionStatus from "data/constants/transactionStatus";
 import { Button } from "react-bootstrap";
 
 const modalRoot = document.getElementById("modal-root");
@@ -48,7 +49,8 @@ function ConfirmModal({ id, updStatus, status, setModalIsOpen }) {
           <p className={s.ConfirmModal__text}>
             {" "}
             Are you sure you want to{" "}
-            {status === "rejected" ? "reject" : "approve"} the transaction?
+            {status === transactionStatus.rejected ? "reject" : "approve"} the
+            transaction?
           </p>
           <div className={s.ConfirmModal__controllers}>
             <Button

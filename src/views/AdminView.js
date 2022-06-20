@@ -11,12 +11,15 @@ import useToken from "hooks/useToken";
 
 import getTransactions from "api/getTransactions";
 import filterOptions from "data/filterOptions.json";
+import transactionStatus from "data/constants/transactionStatus";
 
 const LoginView = lazy(() =>
   import("views/LoginView" /*webpackChunkName: "login-view" */)
 );
 
 function AdminView() {
+  const { pending, rejected, approved } = transactionStatus;
+
   const { token, setToken } = useToken();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -152,12 +155,12 @@ function AdminView() {
           // console.log("SORTED", data);
 
           const filtered = data.filter((item) => {
-            if (getLocalStorage.value === "pending") {
-              return item.status === "pending";
-            } else if (getLocalStorage.value === "rejected") {
-              return item.status === "rejected";
-            } else if (getLocalStorage.value === "approved") {
-              return item.status === "approved";
+            if (getLocalStorage.value === pending) {
+              return item.status === pending;
+            } else if (getLocalStorage.value === rejected) {
+              return item.status === rejected;
+            } else if (getLocalStorage.value === approved) {
+              return item.status === approved;
             } else {
               return data;
             }

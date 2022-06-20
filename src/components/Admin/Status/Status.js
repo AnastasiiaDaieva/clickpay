@@ -2,11 +2,13 @@ import { BiX, BiDotsHorizontalRounded, BiCheck } from "react-icons/bi";
 import { useState } from "react";
 import s from "./Status.module.scss";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
+import transactionStatus from "data/constants/transactionStatus";
 
 function Status({ status, updStatus, id }) {
+  const { pending, rejected, approved } = transactionStatus;
   const [showIcons, setShowIcons] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [chosenStatus, setChosenStatus] = useState("pending");
+  const [chosenStatus, setChosenStatus] = useState(pending);
   const handleClick = () => {
     setShowIcons(true);
   };
@@ -27,15 +29,13 @@ function Status({ status, updStatus, id }) {
           setModalIsOpen={setModalIsOpen}
         />
       )}
-      {status === "pending" && (
-        <BiDotsHorizontalRounded onClick={handleClick} />
-      )}
-      {status === "rejected" && <BiX />}
-      {status === "approved" && <BiCheck />}{" "}
+      {status === pending && <BiDotsHorizontalRounded onClick={handleClick} />}
+      {status === rejected && <BiX />}
+      {status === approved && <BiCheck />}{" "}
       {showIcons && (
         <div className={s.Status__icons}>
-          <BiX onClick={() => handleChoice("rejected")} />{" "}
-          <BiCheck onClick={() => handleChoice("approved")} />
+          <BiX onClick={() => handleChoice(rejected)} />{" "}
+          <BiCheck onClick={() => handleChoice(approved)} />
         </div>
       )}
     </div>

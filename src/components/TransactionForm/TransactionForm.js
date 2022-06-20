@@ -1,15 +1,17 @@
 import { useForm, Controller } from "react-hook-form";
 import s from "./TransactionForm.module.scss";
 import axios from "axios";
-
+import transactionStatus from "data/constants/transactionStatus";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Currency from "./Elements/Currency";
 import FormText from "./Elements/FormText";
 import InputMask from "react-input-mask";
 import Loader from "components/Loader/Loader";
 
 function TransactionForm({ setIsInProgress, setIsSuccessful }) {
+  const { rejected, approved } = transactionStatus;
+
   const [isLoading, setIsLoading] = useState(false);
   const [currentValue, setCurrentValue] = useState("dollar");
   const {
@@ -44,12 +46,12 @@ function TransactionForm({ setIsInProgress, setIsSuccessful }) {
         .get(`/transactions/${response.data._id}`)
         .catch((error) => console.log(error));
 
-      if (getUpdate.data.status === "approved") {
+      if (getUpdate.data.status === approved) {
         clearInterval(interval);
         setIsSuccessful(true);
         setIsLoading(false);
         setIsInProgress(false);
-      } else if (getUpdate.data.status === "rejected") {
+      } else if (getUpdate.data.status === rejected) {
         clearInterval(interval);
         setIsSuccessful(false);
         setIsLoading(false);
