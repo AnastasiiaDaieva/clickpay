@@ -4,7 +4,7 @@ import s from "./LoginForm.module.scss";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-function LoginForm({ setCurrentUser, setErrorCode }) {
+function LoginForm({ setToken }) {
   const {
     register,
     handleSubmit,
@@ -15,19 +15,17 @@ function LoginForm({ setCurrentUser, setErrorCode }) {
   const onSubmit = async (data) => {
     try {
       const { email, password } = data;
-      const response = await axios
-        .post("/users/login", {
-          email,
-          password,
-        })
-        .catch((error) => {
-          console.log("LOGIN RES CATCH", error.response.data.message);
-        });
-      setCurrentUser(response.data.user);
-
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      const response = await axios.post("/users/login", {
+        email,
+        password,
+      });
+      console.log(response);
+      // console.log("token", response.data.user.token);
+      setToken(response.data.user.token);
+      axios.defaults.headers.common.Authorization = `Bearer ${response.data.user.token}`;
+      console.log(axios.defaults.headers.common.Authorization);
     } catch (error) {
-      console.log("LOGIN CATCH", error.status, error);
+      console.log("LOGIN CATCH", error);
     }
 
     reset();
@@ -69,7 +67,7 @@ function LoginForm({ setCurrentUser, setErrorCode }) {
             type="submit"
             className={s.LoginForm__button}
           >
-            Submit
+            Login
           </Button>
         </Form>
       </Container>

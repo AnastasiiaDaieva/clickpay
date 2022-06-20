@@ -5,7 +5,6 @@ import { Route, Routes } from "react-router-dom";
 import Loader from "components/Loader/Loader";
 import axios from "axios";
 
-import { RequireAuth, GeneralAccess } from "./helpers/checkAuth";
 import { useState } from "react";
 
 // axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
@@ -18,15 +17,7 @@ const AdminView = lazy(() =>
   import("views/AdminView" /*webpackChunkName: "admin-view" */)
 );
 
-const LoginView = lazy(() =>
-  import("views/LoginView" /*webpackChunkName: "login-view" */)
-);
-
 function App() {
-  const [currentUser, setCurrentUser] = useState();
-  // console.log(currentUser);
-  const [errorCode, setErrorCode] = useState(null);
-
   //
   return (
     <div className={s.App}>
@@ -36,35 +27,7 @@ function App() {
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<HomepageView />} />{" "}
-            <Route
-              path="/login"
-              element={
-                <GeneralAccess redirectTo="/admin">
-                  <LoginView
-                    setCurrentUser={setCurrentUser}
-                    setErrorCode={setErrorCode}
-                  />
-                </GeneralAccess>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <RequireAuth
-                  redirectTo="/login"
-                  errorCode={errorCode}
-                  setCurrentUser={setCurrentUser}
-                  setErrorCode={setErrorCode}
-                >
-                  <AdminView
-                    errorCode={errorCode}
-                    setCurrentUser={setCurrentUser}
-                    setErrorCode={setErrorCode}
-                    currentUser={currentUser}
-                  />
-                </RequireAuth>
-              }
-            />
+            <Route path="/admin" element={<AdminView />} />
           </Routes>
         </Suspense>
       </main>

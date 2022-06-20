@@ -1,12 +1,16 @@
 import LoginForm from "components/Admin/LoginForm/LoginForm";
+import { useEffect } from "react";
 
-function LoginView({ setCurrentUser, errorCode, setErrorCode }) {
-  if (errorCode === 401) {
-    setErrorCode(null);
-  }
+function LoginView({ setToken }) {
+  // useEffect(() => {
+  //   if (errorCode === 401) {
+  //     setErrorCode(null);
+  //   }
+  // }, []);
+
   return (
     <>
-      <LoginForm setCurrentUser={setCurrentUser} setErrorCode={setErrorCode} />
+      <LoginForm  setToken={setToken} />
     </>
   );
 }

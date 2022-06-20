@@ -1,78 +1,119 @@
 import AdminTable from "components/Admin/AdminTable/AdminTable";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy } from "react";
 import s from "./AdminView.module.scss";
 import axios from "axios";
 import Loader from "components/Loader/Loader";
 import AdminLogout from "components/Admin/AdminLogout/AdminLogout";
 import Filter from "components/Admin/Filter/Filter";
 import Search from "components/Admin/Search/Search";
-import { Navigate } from "react-router";
 import PaginatedTransactions from "components/Admin/AdminTable/PaginatedTransactions";
+import useToken from "hooks/useToken";
 
-const currentToken = JSON.parse(localStorage.getItem("user")).token;
+import getTransactions from "api/getTransactions";
+import filterOptions from "data/filterOptions.json";
 
-axios.defaults.headers.common.Authorization = `Bearer ${currentToken}`;
+const LoginView = lazy(() =>
+  import("views/LoginView" /*webpackChunkName: "login-view" */)
+);
 
-function AdminView({ setCurrentUser, currentUser, errorCode, setErrorCode }) {
-  // const [currentUser, setCurrentUser] = useState();
+function AdminView() {
+  const { token, setToken } = useToken();
+
+  // console.log(token);
+
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [pageCount, setPageCount] = useState(1);
-
+  const [filterOption, setFilterOption] = useState(filterOptions[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
 
-  const getTransactions = async (page) => {
-    try {
-      const response = await axios.get(
-        `/transactions?page=${page}&limit=${itemsPerPage}`
-      );
-      return response;
-    } catch (error) {
-      console.log("GET ORIGINAL CATCH", error.response.data.message);
-      if (error.response.data.message.toLowerCase() === "not authorized") {
-        setCurrentUser("");
-        localStorage.setItem("user", JSON.stringify(""));
-        setErrorCode(401);
-      }
+  //  handlers
+  const handleFilter = async (option) => {
+    if (token) {
+      setIsLoading(true);
+      localStorage.setItem("filter", JSON.stringify(option));
+      setFilterOption(option);
+      await axios
+        .get(
+          option.value === "all"
+            ? `/transactions?page=${currentPage}&limit=${itemsPerPage}`
+            : `/transactions/status/${option.value}?page=${currentPage}&limit=${itemsPerPage}`
+        )
+        .then((res) => {
+          setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
+          const data = res.data.transactions;
+          // console.log("statusdata", res);
+
+          setTransactions(data);
+        })
+        .catch((error) => {
+          console.log("FILTER CATCH", error.response.data.message);
+          if (error.response.data.message.toLowerCase() === "not authorized") {
+            console.log(401);
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
-  const filterOptions = [
-    { value: "all", label: "All" },
-    { value: "pending", label: "Pending" },
-    { value: "rejected", label: "Rejected" },
-    { value: "approved", label: "Approved" },
-  ];
-  const [filterOption, setFilterOption] = useState(filterOptions[0]);
-
-  const handleFilter = async (option) => {
+  const handlePageClick = async (event) => {
     setIsLoading(true);
-    localStorage.setItem("filter", JSON.stringify(option));
-    setFilterOption(option);
-    await axios
-      .get(
-        option.value === "all"
-          ? `/transactions?page=${currentPage}&limit=${itemsPerPage}`
-          : `/transactions/status/${option.value}?page=${currentPage}&limit=${itemsPerPage}`
-      )
-      .then((res) => {
-        setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
-        const data = res.data.transactions;
-        // console.log("statusdata", res);
+    console.log(event.selected);
+    console.log(currentPage);
+    let currPage = event.selected + 1;
+    console.log(currentPage);
 
-        setTransactions(data);
+    getTransactions(currPage, itemsPerPage, token)
+      .then((res) => res.data.transactions)
+      .then((newTrns) => {
+        // console.log(newTrns);
+        const newArray = newTrns;
+        setTransactions(newArray);
+        setCurrentPage(currPage);
       })
       .catch((error) => {
-        console.log("FILTER CATCH", error.response.data.message);
-        if (error.response.data.message.toLowerCase() === "not authorized") {
-          setCurrentUser("");
-          localStorage.setItem("user", JSON.stringify(""));
-          setErrorCode(401);
-        }
+        console.log("PAGE CLICK CATCH", error);
       })
       .finally(() => setIsLoading(false));
+  };
+
+  const updStatus = (newStatus, id) => {
+    if (token) {
+      setIsLoading(true);
+      // console.log(newStatus);
+
+      axios
+        .patch(`/transactions/${id}/status`, {
+          status: newStatus,
+        })
+        .then((res) => {
+          // console.log(res.data);
+          const data = res.data;
+          return data;
+        })
+        .then((trn) => {
+          // console.log(trn);
+          const idx = transactions.findIndex((item) => item._id === id);
+          // console.log("obj", idx);
+          let items = [...transactions];
+          let item = { ...transactions[idx] };
+
+          item.status = trn.status;
+          item.updatedAt = trn.updatedAt;
+
+          items[idx] = item;
+          setTransactions(items);
+        })
+        .catch((error) => {
+          console.log("UPDSTATUS CATCH", error);
+          if (error.response.data.message.toLowerCase() === "not authorized") {
+            console.log(401);
+          }
+        })
+        .finally(() => setIsLoading(false));
+    }
   };
   const getVisibleTransactions = () => {
     const normalizedFilter = searchQuery.toLowerCase().trim();
@@ -87,162 +128,87 @@ function AdminView({ setCurrentUser, currentUser, errorCode, setErrorCode }) {
     }
   };
   const visibleTransactions = getVisibleTransactions();
-  // const setSearchQuery = (text) => {};
   // console.log("visible", visibleTransactions);
 
+  // useEffects
   useEffect(() => {
     setIsLoading(true);
-    const loggedInUser = localStorage.getItem("user");
-    if (loggedInUser) {
-      const foundUser = JSON.parse(loggedInUser);
-      setCurrentUser(foundUser);
-    }
 
     const setFilter = localStorage.getItem("filter");
     if (setFilter) {
       const currentFilter = JSON.parse(setFilter);
       setFilterOption(currentFilter);
-      // console.log("curfil", currentFilter.label);
     }
 
     const setQuery = localStorage.getItem("query");
     if (setQuery) {
       setSearchQuery(setQuery);
-      // console.log("curfil", currentFilter.label);
     }
 
     setIsLoading(false);
   }, []);
 
-  const handlePageClick = async (event) => {
-    setIsLoading(true);
-    console.log(event.selected);
-    console.log(currentPage);
-    let currPage = event.selected + 1;
-    console.log(currentPage);
+  useEffect(() => {
+    if (token) {
+      setIsLoading(true);
 
-    getTransactions(currPage)
-      .then((res) => res.data.transactions)
-      .then((newTrns) => {
-        // console.log(newTrns);
-        const newArray = newTrns;
-        setTransactions(newArray);
-        setCurrentPage(currPage);
-      })
-      .catch((error) => {
-        console.log("PAGE CLICK CATCH", error.response.data.message);
-        if (error.response.data.message.toLowerCase() === "not authorized") {
-          setCurrentUser("");
-          localStorage.setItem("user", JSON.stringify(""));
-          setErrorCode(401);
-        }
-      })
-      .finally(() => setIsLoading(false));
-    // setCurrentPage(currPage);
-  };
+      getTransactions(currentPage, itemsPerPage, token)
+        .then((res) => {
+          // console.log(res);
+
+          const data = res.data.transactions.sort((a, b) =>
+            b.createdAt.localeCompare(a.createdAt)
+          );
+          // console.log("SORTED", data);
+          setTransactions(data);
+          setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      setToken("");
+      sessionStorage.setItem("token", JSON.stringify(""));
+
+      axios.defaults.headers.common.Authorization = "";
+    }
+  }, [token]);
 
   useEffect(() => {
-    setIsLoading(true);
+    if (token) {
+      setIsLoading(true);
+      const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
+      getTransactions(currentPage, itemsPerPage, token)
+        .then((res) => {
+          const data = res.data.transactions;
+          // console.log(data);
+          const filtered = data.filter((item) => {
+            if (getLocalStorage.value === "pending") {
+              return item.status === "pending";
+            } else if (getLocalStorage.value === "rejected") {
+              return item.status === "rejected";
+            } else if (getLocalStorage.value === "approved") {
+              return item.status === "approved";
+            } else {
+              return data;
+            }
+          });
+          // console.log("SORTED and FILTERED", data);
+          setTransactions(filtered);
+        })
 
-    getTransactions()
-      .then((res) => {
-        // console.log(res);
+        .finally(() => setIsLoading(false));
+    } else {
+      sessionStorage.setItem("token", JSON.stringify(""));
+      setToken("");
 
-        const data = res.data.transactions.sort((a, b) =>
-          b.createdAt.localeCompare(a.createdAt)
-        );
-        // console.log("SORTED", data);
-        setTransactions(data);
-        setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
-      })
-      .catch((error) => {
-        console.log("GET UE CATCH", error.response.data.message);
-        if (error.response.data.message.toLowerCase() === "not authorized") {
-          setCurrentUser("");
-          localStorage.setItem("user", JSON.stringify(""));
-          setErrorCode(401);
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const updStatus = (newStatus, id) => {
-    setIsLoading(true);
-    // console.log(newStatus);
-
-    axios
-      .patch(`/transactions/${id}/status`, {
-        status: newStatus,
-      })
-      .then((res) => {
-        // console.log(res.data);
-        const data = res.data;
-        return data;
-      })
-      .then((trn) => {
-        // console.log(trn);
-        const idx = transactions.findIndex((item) => item._id === id);
-        // console.log("obj", idx);
-        let items = [...transactions];
-        let item = { ...transactions[idx] };
-
-        item.status = trn.status;
-        item.updatedAt = trn.updatedAt;
-
-        items[idx] = item;
-        setTransactions(items);
-      })
-      .catch((error) => {
-        console.log("UPDSTATUS CATCH", error.response.data.message);
-        if (error.response.data.message.toLowerCase() === "not authorized") {
-          setCurrentUser("");
-          localStorage.setItem("user", JSON.stringify(""));
-          setErrorCode(401);
-        }
-      })
-      .finally(() => setIsLoading(false));
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
-    // console.log("LS", getLocalStorage);
-
-    getTransactions()
-      .then((res) => {
-        const data = res.data.transactions;
-        // console.log(data);
-        const filtered = data.filter((item) => {
-          if (getLocalStorage.value === "pending") {
-            return item.status === "pending";
-          } else if (getLocalStorage.value === "rejected") {
-            return item.status === "rejected";
-          } else if (getLocalStorage.value === "approved") {
-            return item.status === "approved";
-          } else {
-            return data;
-          }
-        });
-        // console.log("SORTED and FILTERED", data);
-        setTransactions(filtered);
-      })
-      .catch((error) => {
-        console.log("REFRESH CATCH", error.response.data.message);
-        if (error.response.data.message.toLowerCase() === "not authorized") {
-          setCurrentUser("");
-          localStorage.setItem("user", JSON.stringify(""));
-          setErrorCode(401);
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  // console.log(currentUser);
+      axios.defaults.headers.common.Authorization = "";
+    }
+  }, [token]);
 
   return (
     <>
-      {errorCode === 401 && <Navigate to="/login" />}
-      {visibleTransactions.length > 0 && (
+      {!token ? (
+        <LoginView setToken={setToken} />
+      ) : (
         <div className={s.AdminView}>
           {isLoading || transactions === undefined ? (
             <Loader />
@@ -259,25 +225,20 @@ function AdminView({ setCurrentUser, currentUser, errorCode, setErrorCode }) {
                   handleFilter={handleFilter}
                 />{" "}
               </div>
-              <AdminLogout
-                setCurrentUser={setCurrentUser}
-                setErrorCode={setErrorCode}
-              />
+              <AdminLogout setToken={setToken} />
               <AdminTable
                 transactions={visibleTransactions}
                 updStatus={updStatus}
               />
-              {/* <PaginatedTransactions
+              <PaginatedTransactions
                 itemsPerPage={itemsPerPage}
                 pageCount={pageCount}
                 handlePageClick={handlePageClick}
-              /> */}
+              />
             </div>
           )}
         </div>
       )}
-
-      {/* {visibleTransactions.length === 0 && "no transactions were found :("} */}
     </>
   );
 }
