@@ -151,6 +151,7 @@ function AdminView() {
   useEffect(() => {
     if (token) {
       setIsLoading(true);
+      const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
 
       getTransactions(currentPage, itemsPerPage, token)
         .then((res) => {
@@ -160,26 +161,7 @@ function AdminView() {
             b.createdAt.localeCompare(a.createdAt)
           );
           // console.log("SORTED", data);
-          setTransactions(data);
-          setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
-        })
-        .finally(() => setIsLoading(false));
-    } else {
-      setToken("");
-      sessionStorage.setItem("token", JSON.stringify(""));
 
-      axios.defaults.headers.common.Authorization = "";
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (token) {
-      setIsLoading(true);
-      const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
-      getTransactions(currentPage, itemsPerPage, token)
-        .then((res) => {
-          const data = res.data.transactions;
-          // console.log(data);
           const filtered = data.filter((item) => {
             if (getLocalStorage.value === "pending") {
               return item.status === "pending";
@@ -191,18 +173,49 @@ function AdminView() {
               return data;
             }
           });
-          // console.log("SORTED and FILTERED", data);
           setTransactions(filtered);
+          setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
         })
-
         .finally(() => setIsLoading(false));
     } else {
-      sessionStorage.setItem("token", JSON.stringify(""));
       setToken("");
+      sessionStorage.setItem("token", JSON.stringify(""));
 
       axios.defaults.headers.common.Authorization = "";
     }
   }, [token]);
+
+  // useEffect(() => {
+  //   if (token) {
+  //     setIsLoading(true);
+  //     const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
+  //     getTransactions(currentPage, itemsPerPage, token)
+  //       .then((res) => {
+  //         const data = res.data.transactions;
+  //         // console.log(data);
+  //         const filtered = data.filter((item) => {
+  //           if (getLocalStorage.value === "pending") {
+  //             return item.status === "pending";
+  //           } else if (getLocalStorage.value === "rejected") {
+  //             return item.status === "rejected";
+  //           } else if (getLocalStorage.value === "approved") {
+  //             return item.status === "approved";
+  //           } else {
+  //             return data;
+  //           }
+  //         });
+  //         // console.log("SORTED and FILTERED", data);
+  //         setTransactions(filtered);
+  //       })
+
+  //       .finally(() => setIsLoading(false));
+  //   } else {
+  //     sessionStorage.setItem("token", JSON.stringify(""));
+  //     setToken("");
+
+  //     axios.defaults.headers.common.Authorization = "";
+  //   }
+  // }, [token]);
 
   return (
     <>
