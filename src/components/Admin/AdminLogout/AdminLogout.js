@@ -3,14 +3,15 @@ import { Container, Button } from "react-bootstrap";
 import s from "./AdminLogout.module.scss";
 import axios from "axios";
 
-function AdminLogout({ setToken }) {
+function AdminLogout({ setToken, setTransactions }) {
   const handleClick = async () => {
     try {
       await axios.get("/users/logout");
       setToken("");
-      // sessionStorage.removeItem("token");
       axios.defaults.headers.common.Authorization = "";
     } catch (error) {
+      setToken("");
+      setTransactions([]);
       console.log("LOGOUT CATCH", error);
     }
   };

@@ -19,8 +19,6 @@ const LoginView = lazy(() =>
 function AdminView() {
   const { token, setToken } = useToken();
 
-  // console.log(token);
-
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,7 +42,6 @@ function AdminView() {
         .then((res) => {
           setPageCount(Math.ceil(res.data.totalNumber / itemsPerPage));
           const data = res.data.transactions;
-          // console.log("statusdata", res);
 
           setTransactions(data);
         })
@@ -60,21 +57,16 @@ function AdminView() {
 
   const handlePageClick = async (event) => {
     setIsLoading(true);
-    console.log(event.selected);
-    console.log(currentPage);
-    let currPage = event.selected + 1;
-    console.log(currentPage);
 
-    getTransactions(currPage, itemsPerPage, token)
+    let currPage = event.selected + 1;
+
+    getTransactions(currPage, itemsPerPage, token, setToken)
       .then((res) => res.data.transactions)
       .then((newTrns) => {
         // console.log(newTrns);
         const newArray = newTrns;
         setTransactions(newArray);
         setCurrentPage(currPage);
-      })
-      .catch((error) => {
-        console.log("PAGE CLICK CATCH", error);
       })
       .finally(() => setIsLoading(false));
   };
@@ -88,11 +80,7 @@ function AdminView() {
         .patch(`/transactions/${id}/status`, {
           status: newStatus,
         })
-        .then((res) => {
-          // console.log(res.data);
-          const data = res.data;
-          return data;
-        })
+
         .then((trn) => {
           // console.log(trn);
           const idx = transactions.findIndex((item) => item._id === id);
@@ -100,8 +88,8 @@ function AdminView() {
           let items = [...transactions];
           let item = { ...transactions[idx] };
 
-          item.status = trn.status;
-          item.updatedAt = trn.updatedAt;
+          item.status = trn.data.status;
+          item.updatedAt = trn.data.updatedAt;
 
           items[idx] = item;
           setTransactions(items);
@@ -109,6 +97,7 @@ function AdminView() {
         .catch((error) => {
           console.log("UPDSTATUS CATCH", error);
           if (error.response.data.message.toLowerCase() === "not authorized") {
+            setToken("");
             console.log(401);
           }
         })
@@ -153,7 +142,7 @@ function AdminView() {
       setIsLoading(true);
       const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
 
-      getTransactions(currentPage, itemsPerPage, token)
+      getTransactions(currentPage, itemsPerPage, token, setToken)
         .then((res) => {
           // console.log(res);
 
@@ -178,44 +167,11 @@ function AdminView() {
         })
         .finally(() => setIsLoading(false));
     } else {
-      setToken("");
       sessionStorage.setItem("token", JSON.stringify(""));
 
       axios.defaults.headers.common.Authorization = "";
     }
   }, [token]);
-
-  // useEffect(() => {
-  //   if (token) {
-  //     setIsLoading(true);
-  //     const getLocalStorage = JSON.parse(localStorage.getItem("filter"));
-  //     getTransactions(currentPage, itemsPerPage, token)
-  //       .then((res) => {
-  //         const data = res.data.transactions;
-  //         // console.log(data);
-  //         const filtered = data.filter((item) => {
-  //           if (getLocalStorage.value === "pending") {
-  //             return item.status === "pending";
-  //           } else if (getLocalStorage.value === "rejected") {
-  //             return item.status === "rejected";
-  //           } else if (getLocalStorage.value === "approved") {
-  //             return item.status === "approved";
-  //           } else {
-  //             return data;
-  //           }
-  //         });
-  //         // console.log("SORTED and FILTERED", data);
-  //         setTransactions(filtered);
-  //       })
-
-  //       .finally(() => setIsLoading(false));
-  //   } else {
-  //     sessionStorage.setItem("token", JSON.stringify(""));
-  //     setToken("");
-
-  //     axios.defaults.headers.common.Authorization = "";
-  //   }
-  // }, [token]);
 
   return (
     <>
@@ -223,33 +179,34 @@ function AdminView() {
         <LoginView setToken={setToken} />
       ) : (
         <div className={s.AdminView}>
-          {isLoading || transactions === undefined ? (
-            <Loader />
-          ) : (
-            <div>
-              <div className={s.AdminView__wrapper}>
-                <Search
-                  setSearchQuery={setSearchQuery}
-                  searchQuery={searchQuery}
-                />
-                <Filter
-                  filterOptions={filterOptions}
-                  filterOption={filterOption}
-                  handleFilter={handleFilter}
-                />{" "}
-              </div>
-              <AdminLogout setToken={setToken} />
-              <AdminTable
-                transactions={visibleTransactions}
-                updStatus={updStatus}
+          {isLoading && <Loader />}
+
+          <div>
+            <div className={s.AdminView__wrapper}>
+              <Search
+                setSearchQuery={setSearchQuery}
+                searchQuery={searchQuery}
               />
-              <PaginatedTransactions
-                itemsPerPage={itemsPerPage}
-                pageCount={pageCount}
-                handlePageClick={handlePageClick}
-              />
+              <Filter
+                filterOptions={filterOptions}
+                filterOption={filterOption}
+                handleFilter={handleFilter}
+              />{" "}
             </div>
-          )}
+            <AdminLogout
+              setToken={setToken}
+              setTransactions={setTransactions}
+            />
+            <AdminTable
+              transactions={visibleTransactions}
+              updStatus={updStatus}
+            />
+            <PaginatedTransactions
+              itemsPerPage={itemsPerPage}
+              pageCount={pageCount}
+              handlePageClick={handlePageClick}
+            />
+          </div>
         </div>
       )}
     </>

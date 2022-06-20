@@ -9,15 +9,15 @@ const modalRoot = document.getElementById("modal-root");
 function ConfirmModal({ id, updStatus, status, setModalIsOpen }) {
   const closeModal = () => {
     setModalIsOpen(false);
-    console.log(id);
     document.body.style.overflow = "unset";
   };
 
   const confirmAction = (confirm) => {
     if (confirm) {
       updStatus(status, id);
-    } else {
       setModalIsOpen(false);
+    } else {
+      setModalIsOpen(true);
     }
   };
 
