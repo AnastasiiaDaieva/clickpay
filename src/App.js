@@ -16,7 +16,6 @@ const AdminView = lazy(() =>
 );
 
 function App() {
-  //
   return (
     <div className={s.App}>
       <Header />

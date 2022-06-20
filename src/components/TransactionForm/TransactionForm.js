@@ -25,6 +25,7 @@ function TransactionForm({ setIsInProgress, setIsSuccessful }) {
   const sumRegEx = /^[0-9][0-9]*[.,]?[0-9]{0,2}$/;
   const onlyNumRegEx = new RegExp("^[0-9]+$");
   const nameRegEx = /^[a-z ,.'-]+$/i;
+  const expiryDate = /\b(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})\b/;
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -196,6 +197,7 @@ function TransactionForm({ setIsInProgress, setIsSuccessful }) {
                         required: true,
                         minLength: 5,
                         maxLength: 5,
+                        pattern: expiryDate,
                       })}
                     />
                   )}

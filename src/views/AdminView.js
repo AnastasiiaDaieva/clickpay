@@ -8,14 +8,10 @@ import Filter from "components/Admin/Filter/Filter";
 import Search from "components/Admin/Search/Search";
 import PaginatedTransactions from "components/Admin/AdminTable/PaginatedTransactions";
 import useToken from "hooks/useToken";
-
+import LoginForm from "components/Admin/LoginForm/LoginForm";
 import getTransactions from "api/getTransactions";
 import filterOptions from "data/filterOptions.json";
 import transactionStatus from "data/constants/transactionStatus";
-
-const LoginView = lazy(() =>
-  import("views/LoginView" /*webpackChunkName: "login-view" */)
-);
 
 function AdminView() {
   const { pending, rejected, approved } = transactionStatus;
@@ -179,7 +175,7 @@ function AdminView() {
   return (
     <>
       {!token ? (
-        <LoginView setToken={setToken} />
+        <LoginForm setToken={setToken} />
       ) : (
         <div className={s.AdminView}>
           {isLoading && <Loader />}
