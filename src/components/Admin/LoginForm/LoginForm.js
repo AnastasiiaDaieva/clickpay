@@ -32,13 +32,13 @@ function LoginForm({ setToken }) {
       {" "}
       <Container>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <h2>Sign in</h2>
+          <h2 style={{ marginBottom: "30px" }}>Sign in</h2>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
               name="email"
-              placeholder="Enter email"
+              placeholder="Email"
               {...register("email", {
                 required: true,
               })}

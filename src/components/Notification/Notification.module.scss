@@ -2,13 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  height: 100vh;
+  justify-content: space-around;
+  height: 70vh;
 }
 .Notification__success,
 .Notification__failure {
   position: relative;
   border-radius: 15px;
+  margin-bottom: auto;
   color: white;
 }
 
@@ -42,13 +43,10 @@
   right: 15px;
   top: 15px;
 }
-.Notification__submit {
-  margin-top: auto;
-}
 
 @media screen and (max-width: 767.99px) {
   .Notification {
-    padding: 60px 30px;
+    padding: 30px;
   }
   .Notification__success,
   .Notification__failure {
@@ -66,7 +64,7 @@
 }
 @media screen and (min-width: 768px) {
   .Notification {
-    padding-top: 20%;
+    padding-top: 10%;
   }
   .Notification__success,
   .Notification__failure {
