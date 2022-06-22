@@ -20,8 +20,12 @@ function AdminTable({ transactions, updStatus }) {
       .join(".");
 
     const newTime = new Date(date).toISOString().substring(11, 19);
+    const array = newTime.split(":");
+    const hours = array[0] * 1 + 3;
+    const uaTime = [hours, array[1], array[2]].join(":");
+    console.log(uaTime);
 
-    const final = [newTime, newDate].join(", ");
+    const final = [uaTime, newDate].join(", ");
     return final;
   };
   return (
