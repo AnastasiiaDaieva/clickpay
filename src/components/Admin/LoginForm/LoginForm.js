@@ -19,6 +19,7 @@ function LoginForm({ setToken }) {
         email,
         password,
       });
+      console.log(response);
       setToken(response.data.user.token);
       axios.defaults.headers.common.Authorization = `Bearer ${response.data.user.token}`;
     } catch (error) {
