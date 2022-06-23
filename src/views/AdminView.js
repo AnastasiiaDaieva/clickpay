@@ -128,6 +128,7 @@ function AdminView() {
       setFilterOption(currentFilter);
     } else {
       localStorage.setItem("filter", JSON.stringify(filterOptions[0]));
+      console.log(filterOptions[0]);
     }
 
     const setQuery = localStorage.getItem("query");
