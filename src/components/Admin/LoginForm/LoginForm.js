@@ -15,19 +15,10 @@ function LoginForm({ setToken }) {
   const onSubmit = async (data) => {
     try {
       const { email, password } = data;
-      const response = await axios.post(
-        "/users/login",
-        {
-          email,
-          password,
-        },
-        {
-          proxy: {
-            protocol: "https",
-          },
-        },
-        { withCredentials: false }
-      );
+      const response = await axios.post("/users/login", {
+        email,
+        password,
+      });
       console.log(response);
       setToken(response.data.user.token);
 
