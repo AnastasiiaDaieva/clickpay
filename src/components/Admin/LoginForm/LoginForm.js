@@ -25,7 +25,8 @@ function LoginForm({ setToken }) {
           proxy: {
             protocol: "https",
           },
-        }
+        },
+        { withCredentials: false }
       );
       console.log(response);
       setToken(response.data.user.token);
