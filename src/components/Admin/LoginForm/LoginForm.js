@@ -15,12 +15,21 @@ function LoginForm({ setToken }) {
   const onSubmit = async (data) => {
     try {
       const { email, password } = data;
-      const response = await axios.post("/users/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "/users/login",
+        {
+          email,
+          password,
+        },
+        {
+          proxy: {
+            protocol: "https",
+          },
+        }
+      );
       console.log(response);
       setToken(response.data.user.token);
+
       axios.defaults.headers.common.Authorization = `Bearer ${response.data.user.token}`;
     } catch (error) {
       console.log("LOGIN CATCH", error);
