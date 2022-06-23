@@ -7,7 +7,7 @@ import axios from "axios";
 
 // axios.defaults.baseURL = "https://clickpay-backend.herokuapp.com/api";
 // axios.defaults.baseURL = "http://localhost:5000/api";
-axios.defaults.baseURL = "https://153.92.1.11:5000/api";
+axios.defaults.baseURL = "http://153.92.1.11:5000/api";
 
 const HomepageView = lazy(() =>
   import("views/HomepageView" /*webpackChunkName: "home-view" */)
