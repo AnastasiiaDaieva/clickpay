@@ -6,7 +6,8 @@ import Loader from "components/Loader/Loader";
 import { heroku, localHost, VPS } from "data/baseUrl";
 import axios from "axios";
 
-axios.defaults.baseURL = VPS;
+console.log(window.location.protocol);
+axios.defaults.baseURL = localHost;
 
 const HomepageView = lazy(() =>
   import("views/HomepageView" /*webpackChunkName: "home-view" */)
