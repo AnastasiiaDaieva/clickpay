@@ -1,7 +1,7 @@
 {
   "name": "clickpay-frontend",
   "version": "1.0.0",
-  "homepage": "https://clickpaysolution.com/",
+  "homepage": "http://clickpaysolution.com/",
   "description": "clickpay react application",
   "private": true,
   "dependencies": {
