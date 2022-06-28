@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.498c5946.css",
+    "main.js": "/static/js/main.d975670d.js",
+    "home-view.css": "/static/css/home-view.264c5362.chunk.css",
+    "home-view.js": "/static/js/home-view.32d833ea.chunk.js",
+    "admin-view.css": "/static/css/admin-view.e2c8a993.chunk.css",
+    "admin-view.js": "/static/js/admin-view.c25e9f0f.chunk.js",
+    "static/js/134.2aec7414.chunk.js": "/static/js/134.2aec7414.chunk.js",
+    "static/js/829.9bd31765.chunk.js": "/static/js/829.9bd31765.chunk.js",
+    "static/media/creditcard_full.png": "/static/media/creditcard_full.d237e7eca6ca1b8ba92a.png",
+    "static/media/creditcard_mob.png": "/static/media/creditcard_mob.88131256cf774a8c8f65.png",
+    "static/media/logo.svg": "/static/media/logo.5b61de0bfd0e03898aaa1a54edd2a530.svg",
+    "static/media/yes.svg": "/static/media/yes.6adab22d9d15542198ce759ded2246c6.svg",
+    "static/media/no.svg": "/static/media/no.245a43d5eb06f270be9c3978a47d348b.svg",
+    "index.html": "/index.html",
+    "static/media/xsign.svg": "/static/media/xsign.92d77db7f6b2362dfc75e3b68c8a2677.svg",
+    "main.498c5946.css.map": "/static/css/main.498c5946.css.map",
+    "main.d975670d.js.map": "/static/js/main.d975670d.js.map",
+    "home-view.264c5362.chunk.css.map": "/static/css/home-view.264c5362.chunk.css.map",
+    "home-view.32d833ea.chunk.js.map": "/static/js/home-view.32d833ea.chunk.js.map",
+    "admin-view.e2c8a993.chunk.css.map": "/static/css/admin-view.e2c8a993.chunk.css.map",
+    "admin-view.c25e9f0f.chunk.js.map": "/static/js/admin-view.c25e9f0f.chunk.js.map",
+    "134.2aec7414.chunk.js.map": "/static/js/134.2aec7414.chunk.js.map",
+    "829.9bd31765.chunk.js.map": "/static/js/829.9bd31765.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.498c5946.css",
+    "static/js/main.d975670d.js"
+  ]
+}
